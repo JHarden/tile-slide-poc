@@ -1,0 +1,31 @@
+html {
+  color: #333;
+  background-color: #fff; }
+
+li.photo-tile {
+  list-style: none;
+  float: left;
+  padding: 1rem; }
+  li.photo-tile img.photo {
+    width: 100%; }
+  li.photo-tile.column-six {
+    width: 210px;
+    height: 160px; }
+  li.photo-tile.column-four {
+    width: 330px;
+    height: 250px; }
+  li.photo-tile.column-three {
+    width: 450px;
+    height: 335px; }
+
+.row {
+  width: 100%;
+  margin: 0.5rem 0 0.5rem; }
+
+div.photos {
+  width: 80%;
+  float: left; }
+
+div.side-bar {
+  width: 20%;
+  float: left; }
