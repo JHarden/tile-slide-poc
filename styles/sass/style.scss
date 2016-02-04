@@ -25,6 +25,10 @@ li.photo-tile{
   list-style: none;
   float: left;
   padding: 1rem;
+  -webkit-transition: all 200ms ease-out 200ms;
+  -moz-transition: all 200ms ease-out 200ms;
+  -o-transition: all 200ms ease-out 200ms;
+  transition: all 200ms ease-out 200ms;
   //outline: 1px solid #ebebeb;
   img.photo{
     width: 100%;

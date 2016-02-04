@@ -22,7 +22,11 @@ section.content {
 li.photo-tile {
   list-style: none;
   float: left;
-  padding: 1rem; }
+  padding: 1rem;
+  -webkit-transition: all 200ms ease-out 200ms;
+  -moz-transition: all 200ms ease-out 200ms;
+  -o-transition: all 200ms ease-out 200ms;
+  transition: all 200ms ease-out 200ms; }
   li.photo-tile img.photo {
     width: 100%; }
   li.photo-tile.column-six {
