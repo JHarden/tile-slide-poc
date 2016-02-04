@@ -1,6 +1,23 @@
 html {
   color: #333;
-  background-color: #fff; }
+  background-color: #fff;
+  font-family: arial,'Helvetica',sans-serif;
+  font-size: 100%;
+  width: 1366px;
+  margin: 0 auto;
+  height: 100%;
+  outline: 1px solid #ebebeb; }
+
+body {
+  margin: 0; }
+
+h1 {
+  margin-left: 3rem;
+  font-size: 2rem; }
+
+section.content {
+  width: 100%;
+  min-height: 768px; }
 
 li.photo-tile {
   list-style: none;
@@ -9,23 +26,25 @@ li.photo-tile {
   li.photo-tile img.photo {
     width: 100%; }
   li.photo-tile.column-six {
-    width: 210px;
-    height: 160px; }
+    width: 160px;
+    height: 120px; }
   li.photo-tile.column-four {
-    width: 330px;
-    height: 250px; }
+    width: 250px;
+    height: 190px; }
   li.photo-tile.column-three {
-    width: 450px;
-    height: 335px; }
+    width: 350px;
+    height: 260px; }
 
 .row {
   width: 100%;
   margin: 0.5rem 0 0.5rem; }
 
 div.photos {
-  width: 80%;
-  float: left; }
+  width: 90%;
+  float: left;
+  overflow-y: scroll;
+  height: 700px; }
 
 div.side-bar {
-  width: 20%;
+  width: 10%;
   float: left; }
