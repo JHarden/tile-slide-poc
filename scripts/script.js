@@ -26,7 +26,8 @@ window.onload = function(){
             for(var j =0; j<6;j++){
 
                 small_thumb_list[i][j] = {
-                    x: 190 *(j+1),
+                    //TODO figure out correct initial x y coords
+                    x: 0 + (190 *(j)), //
                     y: 0 + (120 *(i))
                 };
                 //console.log('coords: x: ' + +small_thumb_list[i][j].x + ' y: '+small_thumb_list[i][j].y);
@@ -56,8 +57,8 @@ window.onload = function(){
             for(var j =0; j<4;j++){
 
                 med_thumb_list[i][j] = {
-                    x: 250 *(j),
-                    y: 190 *(i+1)
+                    x:  0 + (250 *(j)),
+                    y: 0 + (190 *(i))
                 };
                // console.log('coords: x: ' + +med_thumb_list[i][j].x + ' y: '+med_thumb_list[i][j].y);
                 count++;
