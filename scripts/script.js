@@ -27,7 +27,7 @@ window.onload = function(){
 
                 small_thumb_list[i][j] = {
                     x: 190 *(j+1),
-                    y: 0 + (120 *(i+1))
+                    y: 0 + (120 *(i))
                 };
                 //console.log('coords: x: ' + +small_thumb_list[i][j].x + ' y: '+small_thumb_list[i][j].y);
                 count++;
@@ -277,7 +277,6 @@ window.onload = function(){
         for(var i = photos_list.length-1;i>0;i--) {
 
             var counter = i;
-
             //set the coords of the original tile
             var origin_xcoord = (Math.ceil((counter + 1) / 6)) - 1;
             var origin_ycoord = 0;
@@ -287,30 +286,12 @@ window.onload = function(){
             } else {
                 origin_ycoord = ((counter + 1) % 6) - 1;
             }
-
             //got original coords
             console.log('SOURCE COORDS: ' + origin_xcoord + ' ' + origin_ycoord);
             var origin_coords = small_thumb_list[origin_xcoord][origin_ycoord];
             console.log(origin_coords);
 
-            //get destination coords
-
-            var dest_xcoord = (Math.ceil((counter + 1) / 4)) - 1;
-            ;
-            var dest_ycoord = 0;
-
-            if (((counter + 1) % 4) === 0) {
-                dest_ycoord = 3;
-            } else {
-                dest_ycoord = ((counter + 1) % 4) - 1;
-            }
-            console.log('DESTINATION COORDS: ' + dest_xcoord + ' ' + dest_ycoord);
-            var destination_coords = med_thumb_list[dest_xcoord][dest_ycoord];
-            console.log(destination_coords);
-
-            //do the thing
-            //photos_list[counter].style="transform:translate("+(destination_coords.x-origin_coords.x)+"px,"+(destination_coords.y-origin_coords.y)+"px);";
-            photos_list[counter].style = "transform:translate(" + (destination_coords.x) + "px," + (destination_coords.y) + "px);";
+            photos_list[counter].style = "transform:translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px);";
 
 
         }
