@@ -27,8 +27,7 @@ section.content {
 
 ul.photo-wrap {
   width: 1150px;
-  position: relative;
-  padding: 0 0 0 2.5rem; }
+  position: relative; }
   ul.photo-wrap li.photo-tile {
     list-style: none;
     position: absolute;
@@ -48,6 +47,11 @@ ul.photo-wrap {
     ul.photo-wrap li.photo-tile.column-three {
       width: 350px;
       height: 260px; }
+    ul.photo-wrap li.photo-tile:hover {
+      transition: all 0.35s ease-in;
+      opacity: 0.75;
+      background-color: rgba(28, 151, 255, 0.2);
+      cursor: pointer; }
 
 .row {
   width: 100%;
@@ -75,7 +79,6 @@ div.side-bar {
   div.side-bar .select-wrap .label-large, div.side-bar .select-wrap .label-medium, div.side-bar .select-wrap .label-small {
     background-color: #1e90ff;
     border: 2px solid #1b7cdf;
-    border-radius: 2px;
     display: block;
     margin: 0 auto;
     transition: background-color 0.35s, ease-in; }
