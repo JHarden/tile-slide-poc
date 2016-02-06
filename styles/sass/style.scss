@@ -1,5 +1,4 @@
 html{
-
   color:#333;
   background-color: #fff;
   font-family: arial,'Helvetica',sans-serif;
@@ -7,14 +6,21 @@ html{
   width: 1366px;
   margin: 0 auto;
   height: 100%;
-  outline: 1px solid #ebebeb;
+  background-color: #333;
+  top: -20px;
+  position: relative;
 }
 body{
   margin: 0;
+  height: 100%;
+  background-color: #f5f5f5;
+
 }
 h1{
-  margin-left: 3rem;
+  margin-left: 0.85rem;
+  padding-top: 1.75rem;
   font-size: 2rem;
+  font-weight: 400;
 }
 
 section.content{
@@ -22,9 +28,9 @@ section.content{
   min-height: 768px;
 }
 ul.photo-wrap {
-  padding: 0;
   width: 1150px;
   position: relative;
+  padding: 0 0 0 2.5rem;
   li.photo-tile {
     list-style: none;
     position: absolute;
@@ -63,12 +69,12 @@ div.photos{
   float: left;
   overflow-y: scroll;
   height: 700px;
+  background-color: #fff;
 }
 div.side-bar{
   width: 10%;
   float: left;
   background-color: #f5f5f5;
-  outline: 1px solid #eaeaea;
   height: 400px;
 
 
@@ -78,8 +84,7 @@ div.side-bar{
       width: 100%;
       text-align: center;
       font-weight: 400;
-      font-size: 1rem;
-
+      font-size: 0.9rem;
     }
 
     input.radio{
