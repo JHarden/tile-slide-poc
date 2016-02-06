@@ -24,10 +24,11 @@ section.content{
 ul.photo-wrap {
   padding: 0;
   width: 1150px;
-
+  position: relative;
   li.photo-tile {
     list-style: none;
-    float: left;
+    position: absolute;
+    //float: left;    
     padding: 15px;
     -webkit-transition: all 200ms ease-out 500ms;
     -moz-transition: all 200ms ease-out 500ms;
