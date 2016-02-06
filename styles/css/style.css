@@ -48,11 +48,47 @@ ul.photo-wrap {
   margin: 0.5rem 0 0.5rem; }
 
 div.photos {
-  width: 85%;
+  width: 90%;
   float: left;
   overflow-y: scroll;
   height: 700px; }
 
 div.side-bar {
-  width: 15%;
-  float: left; }
+  width: 10%;
+  float: left;
+  background-color: #f5f5f5;
+  outline: 1px solid #eaeaea;
+  height: 400px; }
+  div.side-bar .select-wrap h4 {
+    width: 100%;
+    text-align: center;
+    font-weight: 400;
+    font-size: 1rem; }
+  div.side-bar .select-wrap input.radio {
+    display: none; }
+  div.side-bar .select-wrap .label-large, div.side-bar .select-wrap .label-medium, div.side-bar .select-wrap .label-small {
+    background-color: #1e90ff;
+    border: 2px solid #1b7cdf;
+    border-radius: 2px;
+    display: block;
+    margin: 0 auto;
+    transition: background-color 0.35s, ease-in; }
+    div.side-bar .select-wrap .label-large:hover, div.side-bar .select-wrap .label-medium:hover, div.side-bar .select-wrap .label-small:hover {
+      transition: all 0.35s, ease-in;
+      background-color: #3bbeff;
+      border: 2px solid #73abff;
+      cursor: pointer; }
+  div.side-bar .select-wrap .label-small {
+    width: 0px;
+    height: 0px;
+    padding: 10px; }
+  div.side-bar .select-wrap .label-medium {
+    margin-top: 20px;
+    width: 10px;
+    height: 10px;
+    padding: 10px; }
+  div.side-bar .select-wrap .label-large {
+    margin-top: 20px;
+    width: 15px;
+    height: 15px;
+    padding: 15px; }
