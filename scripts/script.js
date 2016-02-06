@@ -28,7 +28,7 @@ window.onload = function(){
                 small_thumb_list[i][j] = {
                     //TODO figure out correct initial x y coords
                     x: 0 + (190 *(j)), //
-                    y: 0 + (120 *(i))
+                    y: 0 + (150 *(i))
                 };
                 //console.log('coords: x: ' + +small_thumb_list[i][j].x + ' y: '+small_thumb_list[i][j].y);
                 count++;
@@ -57,8 +57,8 @@ window.onload = function(){
             for(var j =0; j<4;j++){
 
                 med_thumb_list[i][j] = {
-                    x:  0 + (250 *(j)),
-                    y: 0 + (190 *(i))
+                    x:  0 + (280 *(j)),
+                    y: 0 + (220 *(i))
                 };
                // console.log('coords: x: ' + +med_thumb_list[i][j].x + ' y: '+med_thumb_list[i][j].y);
                 count++;
@@ -143,9 +143,9 @@ window.onload = function(){
                 }
 
                 //got original coords
-                console.log('SOURCE COORDS: ' + origin_xcoord + ' ' + origin_ycoord);
+                //console.log('SOURCE COORDS: ' + origin_xcoord + ' ' + origin_ycoord);
                 var origin_coords = small_thumb_list[origin_xcoord][origin_ycoord];
-                console.log(origin_coords);
+               // console.log(origin_coords);
 
                 //get destination coords
 
@@ -157,9 +157,9 @@ window.onload = function(){
                 }else{
                     dest_ycoord = ((counter+1)%4)-1;
                 }
-                console.log('DESTINATION COORDS: ' + dest_xcoord + ' ' + dest_ycoord);
+                //console.log('DESTINATION COORDS: ' + dest_xcoord + ' ' + dest_ycoord);
                 var destination_coords = med_thumb_list[dest_xcoord][dest_ycoord];
-                console.log(destination_coords);
+                //console.log(destination_coords);
 
                 //do the thing
                 //photos_list[counter].style="transform:translate("+(destination_coords.x-origin_coords.x)+"px,"+(destination_coords.y-origin_coords.y)+"px);";
@@ -249,7 +249,7 @@ window.onload = function(){
             if(counter < 0) {
                 clearInterval(i);
             }
-        }, 100);
+        }, 50);
 
     }
 
@@ -288,9 +288,9 @@ window.onload = function(){
                 origin_ycoord = ((counter + 1) % 6) - 1;
             }
             //got original coords
-            console.log('SOURCE COORDS: ' + origin_xcoord + ' ' + origin_ycoord);
+            //console.log('SOURCE COORDS: ' + origin_xcoord + ' ' + origin_ycoord);
             var origin_coords = small_thumb_list[origin_xcoord][origin_ycoord];
-            console.log(origin_coords);
+            //console.log(origin_coords);
 
             photos_list[counter].style = "transform:translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px);";
 
