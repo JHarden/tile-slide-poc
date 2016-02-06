@@ -26,8 +26,7 @@ window.onload = function(){
             for(var j =0; j<6;j++){
 
                 small_thumb_list[i][j] = {
-                    //TODO figure out correct initial x y coords
-                    x: 0 + (190 *(j)), //
+                    x: 0 + (190 *(j)),
                     y: 0 + (150 *(i))
                 };
                 //console.log('coords: x: ' + +small_thumb_list[i][j].x + ' y: '+small_thumb_list[i][j].y);
@@ -42,7 +41,6 @@ window.onload = function(){
     }
 
     small_thumb_list = initsmall2dArray();
-    console.log(small_thumb_list);
 
     function initmedium2dArray(){
         med_thumb_list =  new Array(document.getElementsByClassName('photo-tile').length);
@@ -70,7 +68,6 @@ window.onload = function(){
         return med_thumb_list;
     }
     med_thumb_list = initmedium2dArray();
-    console.log(med_thumb_list);
 
     function initlarge2dArray(){
         large_thumb_list =  new Array(document.getElementsByClassName('photo-tile').length);
@@ -79,19 +76,16 @@ window.onload = function(){
         var count = 0;
         for(var i = 0; i<Math.ceil(large_thumb_list.length/3);i++){
 
-           // console.log('row: ' + i);
             large_thumb_list[i] = new Array(3);
             //inner array will contain coords. j will break every 6 elements
             for(var j =0; j<3;j++){
 
                 large_thumb_list[i][j] = {
-                    x: 350 *(j),
-                    y: 260 *(i+1)
+                    x: 0 + (380 *(j)),
+                    y: 0 + (290 *(i))
                 };
-                //console.log('coords: x: ' + +large_thumb_list[i][j].x + ' y: '+large_thumb_list[i][j].y);
                 count++;
                 if(count === large_thumb_list.length){
-
                     break;
                 }
             }
@@ -99,12 +93,8 @@ window.onload = function(){
         return large_thumb_list;
     }
     large_thumb_list = initlarge2dArray();
-    console.log(large_thumb_list);
 
-
-
-
-    function getOffset( el ) {
+   function getOffset( el ) {
         var _x = 0;
         var _y = 0;
         while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
@@ -115,126 +105,47 @@ window.onload = function(){
         return { top: _y, left: _x };
     }
 
+    function doTranslate(counter,array_length){
+
+        var thumb_list;
+        if(array_length === 6){
+            thumb_list = small_thumb_list;
+        }else if(array_length === 4){
+            thumb_list = med_thumb_list;
+        }else if(array_length === 3){
+            thumb_list = large_thumb_list;
+        }
+
+        var dest_xcoord = (Math.ceil((counter+1)/array_length))-1;
+        var dest_ycoord = 0;
+
+        if(((counter+1)%array_length)===0){
+            dest_ycoord = array_length-1;
+        }else{
+            dest_ycoord = ((counter+1)%array_length)-1;
+        }
+        var destination_coords = thumb_list[dest_xcoord][dest_ycoord];
+
+        //do the thing
+        photos_list[counter].style="transform:translate("+(destination_coords.x)+"px,"+(destination_coords.y)+"px);";
+
+    }
 
     function setNewCoordinates(element,counter){
-
-
-
 
         //new classname;
         if(element.className === "photo-tile column-six"){
 
-            if(isSmall){
-
-            }
+            doTranslate(counter,6);
 
         }else if(element.className === "photo-tile column-four"){
 
-            if(isSmall){
-
-                //set the coords of the original tile
-                var origin_xcoord = (Math.ceil((counter+1)/6))-1;
-                var origin_ycoord = 0;
-
-                 if(((counter+1)%6)===0){
-                     origin_ycoord = 5;
-                }else{
-                     origin_ycoord = ((counter+1)%6)-1;
-                }
-
-                //got original coords
-                //console.log('SOURCE COORDS: ' + origin_xcoord + ' ' + origin_ycoord);
-                var origin_coords = small_thumb_list[origin_xcoord][origin_ycoord];
-               // console.log(origin_coords);
-
-                //get destination coords
-
-                var dest_xcoord = (Math.ceil((counter+1)/4))-1;;
-                var dest_ycoord = 0;
-
-                if(((counter+1)%4)===0){
-                    dest_ycoord = 3;
-                }else{
-                    dest_ycoord = ((counter+1)%4)-1;
-                }
-                //console.log('DESTINATION COORDS: ' + dest_xcoord + ' ' + dest_ycoord);
-                var destination_coords = med_thumb_list[dest_xcoord][dest_ycoord];
-                //console.log(destination_coords);
-
-                //do the thing
-                //photos_list[counter].style="transform:translate("+(destination_coords.x-origin_coords.x)+"px,"+(destination_coords.y-origin_coords.y)+"px);";
-                photos_list[counter].style="transform:translate("+(destination_coords.x)+"px,"+(destination_coords.y)+"px);";
-
-
-                //console.log((Math.ceil(photos_list.length)/6))
-
-                    //outer loop iterates through rows
-                    /*
-                    for(var i = 0; i<Math.ceil(photos_list.length/6);i++){
-                        //inner loop iterates through nodes
-                        for(var j=0;j<6;j++){
-
-                            if(ct===counter){
-                                console.log('BREAK AT: ' + ct);
-                                coords = small_thumb_list[i][j];
-                                console.log(small_thumb_list[i][j]);
-                                break;
-                            }
-                            ct++;
-                        }
-                    }
-                    */
-
-                    //console.log('COORDS:');
-                    //console.log(coords);
-
-                    /*
-                    if(counter === 2){
-                    var coords = small_thumb_list[Math.ceil((counter+1)/6)-1][Math.round((counter+1)/6)-1];
-                    console.log(coords);
-                    console.log('coords: ' + coords.x + " " + coords.y);
-                    }
-                    */
-                //translate to coords of med array
-
-
-            }
-
+            //if(isSmall){
+                doTranslate(counter,4);
+            //}
+        }else if(element.className === "photo-tile column-three"){
+            doTranslate(counter,3);
         }
-
-        /*
-        if(element.clientWidth === 190){
-
-            //location is zero based
-            console.log('figure out current location on this row: ' + element.offsetLeft/190);
-            //figure out which row location is on.
-            var row  = Math.round((element_pos)/6);
-            console.log("element row: " + row);
-            var x = element.offsetLeft/190;
-            var y;
-            console.log('element pos: ' + element_pos);
-            if(element_pos%6 === 0){
-                console.log('element y: ' + Math.round((element_pos)/6));
-                y = Math.round((element_pos)/6)-1;
-            }else{
-                y = Math.round((element_pos)/6) -1;
-                console.log('element y no modulus: ' + Math.round((element_pos)/6));
-            }
-            console.log('coords: ');
-            console.log('x: ' + x);
-            console.log('y: ' + y);
-            //based on location - add specific coords which determine where to translate to
-            var loc = element.offsetLeft/190;
-            //250 is medium length + 50 for padding = 290
-            //1150 is container width
-            var container_width = document.getElementById('photos_list').clientWidth;
-            //find total length divided by tiles per row
-            //var len = Math.round((((element_pos) *290)/1150)/0.25 );
-            //console.log('new position of element: ' + len);
-
-        }
-        */
-
     }
 
     function doIntervalClassChange(classname){
@@ -274,11 +185,8 @@ window.onload = function(){
 
     function onLoadSort(){
 
-
         for(var i = photos_list.length-1;i>0;i--) {
-
             var counter = i;
-            //set the coords of the original tile
             var origin_xcoord = (Math.ceil((counter + 1) / 6)) - 1;
             var origin_ycoord = 0;
 
@@ -287,17 +195,8 @@ window.onload = function(){
             } else {
                 origin_ycoord = ((counter + 1) % 6) - 1;
             }
-            //got original coords
-            //console.log('SOURCE COORDS: ' + origin_xcoord + ' ' + origin_ycoord);
             var origin_coords = small_thumb_list[origin_xcoord][origin_ycoord];
-            //console.log(origin_coords);
-
             photos_list[counter].style = "transform:translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px);";
-
-
         }
-
-
     }onLoadSort();
-
 };

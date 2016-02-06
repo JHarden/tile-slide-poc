@@ -46,19 +46,17 @@ ul.photo-wrap {
 
     &.column-four {
       width: 250px;
-      //width: 160px;
       height: 190px;
     }
     &.column-three {
       width: 350px;
-      //width: 160px;
       height: 260px;
     }
   }
 }
 .row{
   width: 100%;
-  margin: 0.5rem 0 0.5rem;
+  margin: 0.5rem 0 0.5rem;  
 }
 div.photos{
   width: 85%;
@@ -70,19 +68,3 @@ div.side-bar{
   width: 15%;
   float: left;
 }
-
-.last-sm{
-  //animation: l-sm;
-  //animation-duration:3s;
-  transform:translate(-500px,100px);
-}
-
-//
-//@keyframes l-sm {
-//  0%{
-//    transform:translate(0,0);
-//  }
-//  100%{
-//    transform:translate(-500px,100px);
-//  }
-//}
