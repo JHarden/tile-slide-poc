@@ -127,7 +127,8 @@ window.onload = function(){
         var destination_coords = thumb_list[dest_xcoord][dest_ycoord];
 
         //do the thing
-        photos_list[counter].style="transform:translate("+(destination_coords.x)+"px,"+(destination_coords.y)+"px);";
+        photos_list[counter].style="transform:translate3d("+(destination_coords.x)+"px,"+(destination_coords.y)+"px,0);";
+
 
     }
 
@@ -160,7 +161,7 @@ window.onload = function(){
             if(counter < 0) {
                 clearInterval(i);
             }
-        }, 50);
+        }, 100);
 
     }
 
