@@ -48,7 +48,7 @@ ul.photo-wrap {
       width: 350px;
       height: 260px; }
     ul.photo-wrap li.photo-tile:hover {
-      transition: all 0.35s ease-in;
+      transition: all 0.35s ease-out;
       opacity: 0.75;
       background-color: rgba(28, 151, 255, 0.2);
       cursor: pointer; }
