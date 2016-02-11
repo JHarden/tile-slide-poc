@@ -1,9 +1,11 @@
 (function(){
 window.onload = function(){
     var photos_list = document.getElementsByClassName('photo-tile');
+    var singularityList = document.getElementsByClassName('photo');
     document.getElementById('small_size').addEventListener('click',setSmallTiles,false);
     document.getElementById('medium_size').addEventListener('click',setMediumTiles,false);
     document.getElementById('large_size').addEventListener('click',setLargeTiles,false);
+    document.getElementById('reset').addEventListener('click',resetTiles,false);
     var small_thumb_list, med_thumb_list,large_thumb_list;
 
     function init2dArray(countPerRow,xdim,ydim){
@@ -106,6 +108,12 @@ window.onload = function(){
     function setLargeTiles(){
         doIntervalClassChange('photo-tile column-three');
     }
+    function resetTiles(){
+        for(var i=0;i<singularityList.length;i++){
+            singularityList[i].classList.remove('singularity');
+            singularityList[i].classList.remove('sub-singularity');
+        }
+    }
 
     function onLoadSort(){
         for(var i = photos_list.length-1;i>0;i--) {
@@ -122,9 +130,7 @@ window.onload = function(){
             photos_list[counter].style = "transform:translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px);";
         }
     }onLoadSort();
-
     //singularity animation
-
     function doSubSingularity(){
         for(var i=0;i<singularityList.length;i++){
             console.log(i);
@@ -134,18 +140,15 @@ window.onload = function(){
             }
         }
     }
-
     function doSingularity(){
         this.className.className =this.className.replace( /(?:^|\s)pre-animate(?!\S)/g , '' );
         this.className += " singularity";
         doSubSingularity();
     }
-
-
-    var singularityList = document.getElementsByClassName('photo');
-    for(var i=0;i<singularityList.length;i++){
-        singularityList[i].addEventListener('click',doSingularity,false);
-    }
-
+    function initSingularity(){
+        for(var i=0;i<singularityList.length;i++){
+            singularityList[i].addEventListener('click',doSingularity,false);
+        }
+    }initSingularity();
 };
 })();
