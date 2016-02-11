@@ -57,6 +57,7 @@ ul.photo-wrap {
       width: 350px;
       height: 260px;
     }
+    /*
     &:hover{
 
       transition: all 0.35s ease-out;
@@ -64,6 +65,7 @@ ul.photo-wrap {
       background-color: rgba(28, 151, 255, 0.2);
       cursor: pointer;
     }
+    */
   }
 }
 .row{
@@ -129,6 +131,49 @@ div.side-bar{
     }
   }
 }
+
+
+//animation specific classes
+
+.pre-animate{
+
+  opacity: 1;
+  -webkit-transition: opacity 1s ease-out;
+  -moz-transition: opacity 1s ease-out;
+  -ms-transition: opacity 1s ease-out;
+  -o-transition: opacity 1s ease-out;
+  transition: opacity 1s ease-out;
+
+}
+
+.singularity{
+
+  -webkit-animation: 1s linear singularity ;
+  -o-animation: 1s linear singularity ;
+  animation: 1s linear singularity ;
+
+  -webkit-transition: opacity 1s ease-out;
+  -moz-transition: opacity 1s ease-out;
+  -ms-transition: opacity 1s ease-out;
+  -o-transition: opacity 1s ease-out;
+  transition: opacity 1s ease-out;
+  opacity: 0;
+}
+
+.sub-singularity{
+
+  -webkit-animation: 1s linear sub-singularity ;
+  -o-animation: 1s linear sub-singularity ;
+  animation: 1s linear sub-singularity ;
+
+  -webkit-transition: opacity 1s ease-out;
+  -moz-transition: opacity 1s ease-out;
+  -ms-transition: opacity 1s ease-out;
+  -o-transition: opacity 1s ease-out;
+  transition: opacity 1s ease-out;
+  opacity: 0;
+}
+
 @keyframes bounce {
   0%{
     transform:scale(1);
@@ -138,5 +183,44 @@ div.side-bar{
   }
   100%{
     transform:scale(1);
+  }
+}
+
+@keyframes singularity{
+  0%{
+    transform:scale(1);
+    opacity: 1;
+  }
+  50%{
+    transform:scale(1.2);
+    opacity: 1;
+  }
+  70%{
+    transform:scale(0.2);
+    opacity: 0.2;
+  }
+  100%{
+    transform:scale(0.1);
+    opacity: 0;
+  }
+}
+
+@keyframes sub-singularity{
+
+  0%{
+    transform:scale(1);
+    opacity: 1;
+  }
+  50%{
+    transform:scale(1);
+    opacity: 1;
+  }
+  70%{
+    transform:scale(0.5);
+    opacity: 0;
+  }
+  100%{
+    transform:scale(0.1);
+    opacity: 0;
   }
 }

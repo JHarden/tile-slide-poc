@@ -122,5 +122,30 @@ window.onload = function(){
             photos_list[counter].style = "transform:translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px);";
         }
     }onLoadSort();
+
+    //singularity animation
+
+    function doSubSingularity(){
+        for(var i=0;i<singularityList.length;i++){
+            console.log(i);
+            if(!((singularityList[i].className).match(/(?:^|\s)singularity(?!\S)/))){
+                console.log('match');
+                singularityList[i].className += " sub-singularity";
+            }
+        }
+    }
+
+    function doSingularity(){
+        this.className.className =this.className.replace( /(?:^|\s)pre-animate(?!\S)/g , '' );
+        this.className += " singularity";
+        doSubSingularity();
+    }
+
+
+    var singularityList = document.getElementsByClassName('photo');
+    for(var i=0;i<singularityList.length;i++){
+        singularityList[i].addEventListener('click',doSingularity,false);
+    }
+
 };
 })();
