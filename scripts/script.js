@@ -1,19 +1,12 @@
+(function(){
 window.onload = function(){
-
-    var small_click = document.getElementById('small_size'),
-     medium_click = document.getElementById('medium_size'),
-     large_click = document.getElementById('large_size'),
-     photos_list = document.getElementsByClassName('photo-tile');
-    small_click.addEventListener('click',setSmallTiles,false);
-    medium_click.addEventListener('click',setMediumTiles,false);
-    large_click.addEventListener('click',setLargeTiles,false);
+    var photos_list = document.getElementsByClassName('photo-tile');
+    document.getElementById('small_size').addEventListener('click',setSmallTiles,false);
+    document.getElementById('medium_size').addEventListener('click',setMediumTiles,false);
+    document.getElementById('large_size').addEventListener('click',setLargeTiles,false);
     var small_thumb_list, med_thumb_list,large_thumb_list;
-    //create 3 d2 arrays based and store data
 
     function init2dArray(countPerRow,xdim,ydim){
-
-        var localx = xdim;
-        var localy = ydim;
         //init the new array
         var arrayLength = photos_list.length;
         var myList;
@@ -39,8 +32,8 @@ window.onload = function(){
             //inner array will contain coords. j will break every 6 elements
             for(var j =0; j<countPerRow;j++){
                 myList[i][j] = {
-                    x: 0 + (localx *(j)),
-                    y: 0 + (localy *(i))
+                    x: 0 + (xdim *(j)),
+                    y: 0 + (ydim *(i))
                 };
                 count++;
                 if(count === arrayLength){
@@ -130,3 +123,4 @@ window.onload = function(){
         }
     }onLoadSort();
 };
+})();

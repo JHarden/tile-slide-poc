@@ -34,7 +34,6 @@ ul.photo-wrap {
   li.photo-tile {
     list-style: none;
     position: absolute;
-    //float: left;    
     padding: 15px;
     -webkit-transition: all 200ms ease-out 500ms;
     -moz-transition: all 200ms ease-out 500ms;
@@ -128,5 +127,16 @@ div.side-bar{
       height: 15px;
       padding: 15px;
     }
+  }
+}
+@keyframes bounce {
+  0%{
+    transform:scale(1);
+  }
+  50%{
+    transform:scale(1.1);
+  }
+  100%{
+    transform:scale(1);
   }
 }
