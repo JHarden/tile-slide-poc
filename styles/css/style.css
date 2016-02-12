@@ -3,7 +3,6 @@ html {
   background-color: #fff;
   font-family: arial,'Helvetica',sans-serif;
   font-size: 100%;
-  width: 1366px;
   margin: 0 auto;
   height: 100%;
   background-color: #333;
@@ -26,8 +25,9 @@ section.content {
   min-height: 768px; }
 
 ul.photo-wrap {
-  width: 1150px;
-  position: relative; }
+  width: 100%;
+  position: relative;
+  padding: 0; }
   ul.photo-wrap li.photo-tile {
     list-style: none;
     position: absolute;
@@ -60,7 +60,7 @@ div.photos {
   width: 90%;
   float: left;
   overflow-y: scroll;
-  height: 700px;
+  height: 900px;
   background-color: #fff; }
 
 div.side-bar {
