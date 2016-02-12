@@ -12,8 +12,12 @@ var tyloren = function(object,initialize){
         toggle_large = initialize.toggle_handlers.large != undefined ? initialize.toggle_handlers.large : toggle_large;
         toggle_reset = initialize.toggle_handlers.reset != undefined ? initialize.toggle_handlers.reset : toggle_reset;
     }
+
+    var container_width = object.getBoundingClientRect().width;
+    console.log(container_width);
     var outer_list = object.children;
     var singularityList = document.getElementsByClassName('photo');
+
     document.getElementById(toggle_small).addEventListener('click',setSmallTiles,false);
     document.getElementById(toggle_medium).addEventListener('click',setMediumTiles,false);
     document.getElementById(toggle_large).addEventListener('click',setLargeTiles,false);
@@ -146,12 +150,7 @@ var tyloren = function(object,initialize){
                     height:"120px",
                     transform:"translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px)"
                 }
-            )
-            /*
-            outer_list[counter].style.width =160;
-            outer_list[counter].style.height =160;
-            outer_list[counter].style.transform = "translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px)";
-            */
+            );
         }
     }onLoadSort();
     //singularity animation
@@ -165,18 +164,20 @@ var tyloren = function(object,initialize){
         }
     }
     function doSingularity(){
-        this.className =this.className.replace( /(?:^|\s)pre-animate(?!\S)/g , '' );
         this.className += " singularity";
         doSubSingularity();
     }
+
     function initSingularity(){
-        for(var i=0;i<singularityList.length;i++){
-            singularityList[i].addEventListener('click',doSingularity,false);
+        if(singularity){
+            for(var i=0;i<singularityList.length;i++){
+                singularityList[i].addEventListener('click',doSingularity,false);
+            }
         }
     }initSingularity();
 
 };
-tyloren(document.getElementById('photos_list'));
+//tyloren(document.getElementById('photos_list'));
 
 tyloren(document.getElementById('photos_list'),{
     small:[190,150], // small[8], medium[5], large[2]
