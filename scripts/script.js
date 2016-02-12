@@ -1,16 +1,28 @@
-(function(){
-window.onload = function(){
-    var photos_list = document.getElementsByClassName('photo-tile');
-    var singularityList = document.getElementsByClassName('photo');
-    document.getElementById('small_size').addEventListener('click',setSmallTiles,false);
-    document.getElementById('medium_size').addEventListener('click',setMediumTiles,false);
-    document.getElementById('large_size').addEventListener('click',setLargeTiles,false);
-    document.getElementById('reset').addEventListener('click',resetTiles,false);
-    var small_thumb_list, med_thumb_list,large_thumb_list;
+var tyloren = function(object,initialize){
 
+    var sw=[190,150],mw=[280,220],lw=[380,290],speed=100,singularity=true,toggle_small='small_size',toggle_medium='medium_size',toggle_large='large_size',toggle_reset='reset';
+    if(initialize !== undefined){
+        sw = initialize.small !== undefined ? initialize.small : sw;
+        mw = initialize.medium !== undefined ? initialize.medium : mw;
+        lw = initialize.large !== undefined ? initialize.large : lw;
+        speed = initialize.speed !== undefined ? initialize.speed : speed;
+        singularity = initialize.singularity !== undefined ? initialize.singularity : singularity;
+        toggle_small = initialize.toggle_handlers.small != undefined ? initialize.toggle_handlers.small : toggle_small;
+        toggle_medium = initialize.toggle_handlers.medium != undefined ? initialize.toggle_handlers.medium : toggle_medium;
+        toggle_large = initialize.toggle_handlers.large != undefined ? initialize.toggle_handlers.large : toggle_large;
+        toggle_reset = initialize.toggle_handlers.reset != undefined ? initialize.toggle_handlers.reset : toggle_reset;
+    }
+    var outer_list = object.children;
+    var singularityList = document.getElementsByClassName('photo');
+    document.getElementById(toggle_small).addEventListener('click',setSmallTiles,false);
+    document.getElementById(toggle_medium).addEventListener('click',setMediumTiles,false);
+    document.getElementById(toggle_large).addEventListener('click',setLargeTiles,false);
+    document.getElementById(toggle_reset).addEventListener('click',resetTiles,false);
+
+    var small_thumb_list, med_thumb_list,large_thumb_list;
     function init2dArray(countPerRow,xdim,ydim){
         //init the new array
-        var arrayLength = photos_list.length;
+        var arrayLength = outer_list.length;
         var myList;
         switch (countPerRow){
             case 6:
@@ -34,8 +46,8 @@ window.onload = function(){
             //inner array will contain coords. j will break every 6 elements
             for(var j =0; j<countPerRow;j++){
                 myList[i][j] = {
-                    x: 0 + (xdim *(j)),
-                    y: 0 + (ydim *(i))
+                    x: (xdim *(j)),
+                    y: (ydim *(i))
                 };
                 count++;
                 if(count === arrayLength){
@@ -52,9 +64,9 @@ window.onload = function(){
                 return large_thumb_list;
         }
     }
-    small_thumb_list = init2dArray(6,190,150);
-    med_thumb_list = init2dArray(4,280,220);
-    large_thumb_list = init2dArray(3,380,290);
+    small_thumb_list = init2dArray(6,sw[0],sw[1]);
+    med_thumb_list = init2dArray(4,mw[0],mw[1]);
+    large_thumb_list = init2dArray(3,lw[0],lw[1]);
 
     function doTranslate(counter,array_length){
         var thumb_list;
@@ -74,7 +86,7 @@ window.onload = function(){
         }
         var destination_coords = thumb_list[dest_xcoord][dest_ycoord];
         //do the thing
-        photos_list[counter].style="transform:translate3d("+(destination_coords.x)+"px,"+(destination_coords.y)+"px,0);";
+        outer_list[counter].style="transform:translate3d("+(destination_coords.x)+"px,"+(destination_coords.y)+"px,0);";
     }
 
     function setNewCoordinates(element,counter){
@@ -89,15 +101,15 @@ window.onload = function(){
     }
 
     function doIntervalClassChange(classname){
-        var counter = photos_list.length-1;
+        var counter = outer_list.length-1;
         var i = setInterval(function(){
-            photos_list[counter].className = classname;
-            setNewCoordinates(photos_list[counter],counter);
+            outer_list[counter].className = classname;
+            setNewCoordinates(outer_list[counter],counter);
             counter--;
             if(counter < 0) {
                 clearInterval(i);
             }
-        }, 100);
+        }, speed);
     }
     function setSmallTiles(){
         doIntervalClassChange('photo-tile column-six');
@@ -114,9 +126,8 @@ window.onload = function(){
             singularityList[i].classList.remove('sub-singularity');
         }
     }
-
     function onLoadSort(){
-        for(var i = photos_list.length-1;i>0;i--) {
+        for(var i = outer_list.length-1;i>0;i--) {
             var counter = i;
             var origin_xcoord = (Math.ceil((counter + 1) / 6)) - 1;
             var origin_ycoord = 0;
@@ -127,7 +138,20 @@ window.onload = function(){
                 origin_ycoord = ((counter + 1) % 6) - 1;
             }
             var origin_coords = small_thumb_list[origin_xcoord][origin_ycoord];
-            photos_list[counter].style = "transform:translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px);";
+
+            Object.assign(
+                outer_list[counter].style,
+                {
+                    width:"160px",
+                    height:"120px",
+                    transform:"translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px)"
+                }
+            )
+            /*
+            outer_list[counter].style.width =160;
+            outer_list[counter].style.height =160;
+            outer_list[counter].style.transform = "translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px)";
+            */
         }
     }onLoadSort();
     //singularity animation
@@ -141,7 +165,7 @@ window.onload = function(){
         }
     }
     function doSingularity(){
-        this.className.className =this.className.replace( /(?:^|\s)pre-animate(?!\S)/g , '' );
+        this.className =this.className.replace( /(?:^|\s)pre-animate(?!\S)/g , '' );
         this.className += " singularity";
         doSubSingularity();
     }
@@ -150,5 +174,20 @@ window.onload = function(){
             singularityList[i].addEventListener('click',doSingularity,false);
         }
     }initSingularity();
+
 };
-})();
+tyloren(document.getElementById('photos_list'));
+
+tyloren(document.getElementById('photos_list'),{
+    small:[190,150], // small[8], medium[5], large[2]
+    medium:[280,220],
+    large:[380,290],
+    speed:100,
+    singularity:true,
+    toggle_handlers:{
+        small:'small_size',
+        medium:'medium_size',
+        large:'large_size',
+        reset:'reset'
+    }
+});
