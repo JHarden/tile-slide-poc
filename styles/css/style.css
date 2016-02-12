@@ -31,7 +31,7 @@ ul.photo-wrap {
   ul.photo-wrap li.photo-tile {
     list-style: none;
     position: absolute;
-    padding: 15px;
+    padding: 0;
     -webkit-transition: all 200ms ease-out 500ms;
     -moz-transition: all 200ms ease-out 500ms;
     -o-transition: all 200ms ease-out 500ms;
@@ -49,7 +49,6 @@ ul.photo-wrap {
       height: 260px; }
     ul.photo-wrap li.photo-tile:hover {
       transition: all 0.35s ease-out;
-      opacity: 0.75;
       cursor: pointer; }
 
 .row {
@@ -112,6 +111,7 @@ div.side-bar {
     text-align: center; }
 
 .singularity {
+  z-index: 10;
   -webkit-animation: 1s linear singularity;
   -o-animation: 1s linear singularity;
   animation: 1s linear singularity;

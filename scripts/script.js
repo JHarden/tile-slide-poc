@@ -1,7 +1,6 @@
 var tyloren = function(object,initialize){
 
-    //var sw=[190,150],mw=[280,220],lw=[380,290],speed=100,singularity=true,toggle_small='small_size',toggle_medium='medium_size',toggle_large='large_size',toggle_reset='reset';
-    var container_width = object.getBoundingClientRect().width,
+    var padding=15,
         tpr_small = 6,
         tpr_med = 4,
         tpr_lrg = 3,
@@ -16,20 +15,21 @@ var tyloren = function(object,initialize){
         tpr_med = initialize.medium !== undefined ? initialize.medium : tpr_med;
         tpr_lrg = initialize.large !== undefined ? initialize.large : tpr_lrg;
         speed = initialize.speed !== undefined ? initialize.speed : speed;
+        padding = initialize.padding !== undefined ? initialize.padding : padding;
         singularity = initialize.singularity !== undefined ? initialize.singularity : singularity;
         toggle_small = initialize.toggle_handlers.small != undefined ? initialize.toggle_handlers.small : toggle_small;
         toggle_medium = initialize.toggle_handlers.medium != undefined ? initialize.toggle_handlers.medium : toggle_medium;
         toggle_large = initialize.toggle_handlers.large != undefined ? initialize.toggle_handlers.large : toggle_large;
         toggle_reset = initialize.toggle_handlers.reset != undefined ? initialize.toggle_handlers.reset : toggle_reset;
     }
-    var sw=[container_width/tpr_small,container_width/tpr_small],
+    var container_width = object.getBoundingClientRect().width-padding,
+        sw=[container_width/tpr_small,container_width/tpr_small],
         mw=[container_width/tpr_med,container_width/tpr_med],
         lw=[container_width/tpr_lrg,container_width/tpr_lrg];
-    //max width divide by amount of tiles
-
-    console.log(container_width);
     var outer_list = object.children;
-    var singularityList = document.getElementsByClassName('photo');
+
+   var singularityList = [];
+
 
     document.getElementById(toggle_small).addEventListener('click',setSmallTiles,false);
     document.getElementById(toggle_medium).addEventListener('click',setMediumTiles,false);
@@ -64,8 +64,8 @@ var tyloren = function(object,initialize){
             //inner array will contain coords. j will break every 6 elements
             for(var j =0; j<countPerRow;j++){
                 myList[i][j] = {
-                    x: (xdim *(j)),
-                    y: (ydim *(i))
+                    x: (padding) + (xdim *(j)),
+                    y: (padding) + (ydim *(i))
                 };
                 count++;
                 if(count === arrayLength){
@@ -110,8 +110,8 @@ var tyloren = function(object,initialize){
         Object.assign(
             outer_list[counter].style,
             {
-                width:(Math.round(cw[0]-30))+"px",
-                height:(Math.round(cw[1]-30))+"px",
+                width:(Math.round(cw[0]-padding))+"px",
+                height:(Math.round(cw[1]-padding))+"px",
                 transform:"translate(" + (destination_coords.x) + "px," + (destination_coords.y) + "px)"
             }
         );
@@ -168,24 +168,21 @@ var tyloren = function(object,initialize){
                 origin_ycoord = ((counter + 1) % tpr_small) - 1;
             }
             var origin_coords = small_thumb_list[origin_xcoord][origin_ycoord];
-            console.log(sw[0]);
-            console.log(sw[1]);
             Object.assign(
                 outer_list[counter].style,
                 {
-                    width:(Math.round(sw[0]-30))+"px",
-                    height:(Math.round(sw[1]-30))+"px",
+                    width:(Math.round(sw[0]-padding))+"px",
+                    height:(Math.round(sw[1]-padding))+"px",
                     transform:"translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px)"
                 }
             );
         }
     }onLoadSort();
+
     //singularity animation
     function doSubSingularity(){
         for(var i=0;i<singularityList.length;i++){
-            console.log(i);
             if(!((singularityList[i].className).match(/(?:^|\s)singularity(?!\S)/))){
-                console.log('match');
                 singularityList[i].className += " sub-singularity";
             }
         }
@@ -197,8 +194,9 @@ var tyloren = function(object,initialize){
 
     function initSingularity(){
         if(singularity){
-            for(var i=0;i<singularityList.length;i++){
-                singularityList[i].addEventListener('click',doSingularity,false);
+            for(var i=0;i<outer_list.length;i++){
+                outer_list[i].children[0].addEventListener('click',doSingularity,false);
+                singularityList.push(outer_list[i].children[0]);
             }
         }
     }initSingularity();
@@ -207,10 +205,11 @@ var tyloren = function(object,initialize){
 //tyloren(document.getElementById('photos_list'));
 
 tyloren(document.getElementById('photos_list'),{
-    small:10,
-    medium:5,
+    small:6,
+    medium:4,
     large:3,
     speed:100,
+    padding:30,
     singularity:true,
     toggle_handlers:{
         small:'small_size',
