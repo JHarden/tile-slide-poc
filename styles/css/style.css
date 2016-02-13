@@ -115,6 +115,7 @@ div.side-bar {
   -webkit-animation: 1s linear singularity;
   -o-animation: 1s linear singularity;
   animation: 1s linear singularity;
+  transform-style: preserve-3d;
   -webkit-transition: opacity 1s ease-out;
   -moz-transition: opacity 1s ease-out;
   -ms-transition: opacity 1s ease-out;
@@ -123,9 +124,11 @@ div.side-bar {
   opacity: 0; }
 
 .sub-singularity {
+  z-index: 0;
   -webkit-animation: 1s linear sub-singularity;
   -o-animation: 1s linear sub-singularity;
   animation: 1s linear sub-singularity;
+  transform-style: preserve-3d;
   -webkit-transition: opacity 1s ease-out;
   -moz-transition: opacity 1s ease-out;
   -ms-transition: opacity 1s ease-out;

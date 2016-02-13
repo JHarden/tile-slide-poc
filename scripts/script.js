@@ -9,7 +9,12 @@ var tyloren = function(object,initialize){
         toggle_small='small_size',
         toggle_medium='medium_size',
         toggle_large='large_size',
-        toggle_reset='reset';
+        toggle_reset='reset',
+        singularityList = [],
+        outer_list = object.children,
+        small_thumb_list,
+        med_thumb_list,
+        large_thumb_list;
     if(initialize !== undefined){
         tpr_small = initialize.small !== undefined ? initialize.small : tpr_small;
         tpr_med = initialize.medium !== undefined ? initialize.medium : tpr_med;
@@ -26,17 +31,11 @@ var tyloren = function(object,initialize){
         sw=[container_width/tpr_small,container_width/tpr_small],
         mw=[container_width/tpr_med,container_width/tpr_med],
         lw=[container_width/tpr_lrg,container_width/tpr_lrg];
-    var outer_list = object.children;
-
-   var singularityList = [];
-
 
     document.getElementById(toggle_small).addEventListener('click',setSmallTiles,false);
     document.getElementById(toggle_medium).addEventListener('click',setMediumTiles,false);
     document.getElementById(toggle_large).addEventListener('click',setLargeTiles,false);
     document.getElementById(toggle_reset).addEventListener('click',resetTiles,false);
-
-    var small_thumb_list, med_thumb_list,large_thumb_list;
 
     function init2dArray(countPerRow,xdim,ydim){
         //init the new array
@@ -44,24 +43,21 @@ var tyloren = function(object,initialize){
         var myList;
         switch (countPerRow){
             case tpr_small:
-                small_thumb_list = new Array(document.getElementsByClassName('photo-tile').length);
+                small_thumb_list = new Array(arrayLength);
                 myList = small_thumb_list;
                 break;
             case tpr_med:
-                med_thumb_list = new Array(document.getElementsByClassName('photo-tile').length);
+                med_thumb_list = new Array(arrayLength);
                 myList = med_thumb_list;
                 break;
             case tpr_lrg:
-                large_thumb_list = new Array(document.getElementsByClassName('photo-tile').length);
+                large_thumb_list = new Array(arrayLength);
                 myList = large_thumb_list;
                 break;
         }
-        //outer array contains number of rows
         var count = 0;
         for(var i = 0; i<Math.ceil(arrayLength/countPerRow);i++){
-
             myList[i] = new Array(countPerRow);
-            //inner array will contain coords. j will break every 6 elements
             for(var j =0; j<countPerRow;j++){
                 myList[i][j] = {
                     x: (padding) + (xdim *(j)),
@@ -87,23 +83,24 @@ var tyloren = function(object,initialize){
     large_thumb_list = init2dArray(tpr_lrg,lw[0],lw[1]);
 
     function doTranslate(counter,array_length){
+
         var thumb_list, cw;
-        if(array_length === tpr_small){
+        if(parseInt(array_length) === tpr_small){
             thumb_list = small_thumb_list;
             cw = sw;
-        }else if(array_length === tpr_med){
+        }else if(parseInt(array_length) === tpr_med){
             thumb_list = med_thumb_list;
             cw = mw;
-        }else if(array_length === tpr_lrg){
+        }else if(parseInt(array_length) === tpr_lrg){
             thumb_list = large_thumb_list;
             cw = lw;
         }
-        var dest_xcoord = (Math.ceil((counter+1)/array_length))-1;
+        var dest_xcoord = (Math.ceil((counter+1)/parseInt(array_length)))-1;
         var dest_ycoord = 0;
-        if(((counter+1)%array_length)===0){
-            dest_ycoord = array_length-1;
+        if(((counter+1)%parseInt(array_length))===0){
+            dest_ycoord = parseInt(array_length)-1;
         }else{
-            dest_ycoord = ((counter+1)%array_length)-1;
+            dest_ycoord = ((counter+1)%parseInt(array_length))-1;
         }
         var destination_coords = thumb_list[dest_xcoord][dest_ycoord];
         //do the thing
@@ -112,28 +109,19 @@ var tyloren = function(object,initialize){
             {
                 width:(Math.round(cw[0]-padding))+"px",
                 height:(Math.round(cw[1]-padding))+"px",
-                transform:"translate(" + (destination_coords.x) + "px," + (destination_coords.y) + "px)"
+                transform:"translate3d(" + (destination_coords.x) + "px," + (destination_coords.y) + "px,0)"
             }
         );
-        //outer_list[counter].style="transform:translate3d("+(destination_coords.x)+"px,"+(destination_coords.y)+"px,0);";
     }
 
-    function setNewCoordinates(element,counter){
-        //new classname;
-        if(element.className === "photo-tile column-six"){
-            doTranslate(counter,tpr_small);
-        }else if(element.className === "photo-tile column-four"){
-            doTranslate(counter,tpr_med);
-        }else if(element.className === "photo-tile column-three"){
-            doTranslate(counter,tpr_lrg);
-        }
+    function setNewCoordinates(counter,row_num){
+        doTranslate(counter,row_num);
     }
 
-    function doIntervalClassChange(classname){
+    function doIntervalClassChange(row_num){
         var counter = outer_list.length-1;
         var i = setInterval(function(){
-            outer_list[counter].className = classname;
-            setNewCoordinates(outer_list[counter],counter);
+            setNewCoordinates(counter,row_num);
             counter--;
             if(counter < 0) {
                 clearInterval(i);
@@ -141,13 +129,13 @@ var tyloren = function(object,initialize){
         }, speed);
     }
     function setSmallTiles(){
-        doIntervalClassChange('photo-tile column-six');
+        doIntervalClassChange(tpr_small);
     }
     function setMediumTiles(){
-        doIntervalClassChange('photo-tile column-four');
+        doIntervalClassChange(tpr_med);
     }
     function setLargeTiles(){
-        doIntervalClassChange('photo-tile column-three');
+        doIntervalClassChange(tpr_lrg);
     }
     function resetTiles(){
         for(var i=0;i<singularityList.length;i++){
@@ -173,25 +161,20 @@ var tyloren = function(object,initialize){
                 {
                     width:(Math.round(sw[0]-padding))+"px",
                     height:(Math.round(sw[1]-padding))+"px",
-                    transform:"translate(" + (origin_coords.x) + "px," + (origin_coords.y) + "px)"
+                    transform:"translate3d(" + (origin_coords.x) + "px," + (origin_coords.y) + "px,0)"
                 }
             );
         }
     }onLoadSort();
 
-    //singularity animation
-    function doSubSingularity(){
+    function doSingularity(){
+        this.className += " singularity";
         for(var i=0;i<singularityList.length;i++){
             if(!((singularityList[i].className).match(/(?:^|\s)singularity(?!\S)/))){
                 singularityList[i].className += " sub-singularity";
             }
         }
     }
-    function doSingularity(){
-        this.className += " singularity";
-        doSubSingularity();
-    }
-
     function initSingularity(){
         if(singularity){
             for(var i=0;i<outer_list.length;i++){
@@ -202,14 +185,14 @@ var tyloren = function(object,initialize){
     }initSingularity();
 
 };
-//tyloren(document.getElementById('photos_list'));
 
+//tyloren(document.getElementById('photos_list'));
 tyloren(document.getElementById('photos_list'),{
-    small:6,
+    small:8,
     medium:4,
     large:3,
     speed:100,
-    padding:30,
+    padding:10,
     singularity:true,
     toggle_handlers:{
         small:'small_size',
