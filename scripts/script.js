@@ -21,7 +21,7 @@ var tyloren = function(object,initialize){
         tpr_lrg = initialize.large !== undefined ? initialize.large : tpr_lrg;
         speed = initialize.speed !== undefined ? initialize.speed : speed;
         padding = initialize.padding !== undefined ? initialize.padding : padding;
-        singularity = initialize.singularity !== undefined ? initialize.singularity : singularity;
+        singularity = (initialize.singularity !== undefined) ? initialize.singularity : singularity;
         toggle_small = initialize.toggle_handlers.small != undefined ? initialize.toggle_handlers.small : toggle_small;
         toggle_medium = initialize.toggle_handlers.medium != undefined ? initialize.toggle_handlers.medium : toggle_medium;
         toggle_large = initialize.toggle_handlers.large != undefined ? initialize.toggle_handlers.large : toggle_large;
@@ -31,11 +31,6 @@ var tyloren = function(object,initialize){
         sw=[container_width/tpr_small,container_width/tpr_small],
         mw=[container_width/tpr_med,container_width/tpr_med],
         lw=[container_width/tpr_lrg,container_width/tpr_lrg];
-
-    document.getElementById(toggle_small).addEventListener('click',setSmallTiles,false);
-    document.getElementById(toggle_medium).addEventListener('click',setMediumTiles,false);
-    document.getElementById(toggle_large).addEventListener('click',setLargeTiles,false);
-    document.getElementById(toggle_reset).addEventListener('click',resetTiles,false);
 
     function init2dArray(countPerRow,xdim,ydim){
         //init the new array
@@ -103,7 +98,7 @@ var tyloren = function(object,initialize){
             dest_ycoord = ((counter+1)%parseInt(array_length))-1;
         }
         var destination_coords = thumb_list[dest_xcoord][dest_ycoord];
-        //do the thing
+
         Object.assign(
             outer_list[counter].style,
             {
@@ -114,33 +109,30 @@ var tyloren = function(object,initialize){
         );
     }
 
-    function setNewCoordinates(counter,row_num){
-        doTranslate(counter,row_num);
-    }
+    function doIntervalChange(row_num){
 
-    function doIntervalClassChange(row_num){
+        object.dataset.tiles = row_num;
         var counter = outer_list.length-1;
         var i = setInterval(function(){
-            setNewCoordinates(counter,row_num);
+            if(object.dataset.tiles==tpr_small){
+                doTranslate(counter,tpr_small);
+            }else if(object.dataset.tiles==tpr_med){
+                doTranslate(counter,tpr_med);
+            }else if(object.dataset.tiles==tpr_lrg){
+                doTranslate(counter,tpr_lrg);
+            }
             counter--;
             if(counter < 0) {
                 clearInterval(i);
             }
         }, speed);
     }
-    function setSmallTiles(){
-        doIntervalClassChange(tpr_small);
-    }
-    function setMediumTiles(){
-        doIntervalClassChange(tpr_med);
-    }
-    function setLargeTiles(){
-        doIntervalClassChange(tpr_lrg);
-    }
+
     function resetTiles(){
         for(var i=0;i<singularityList.length;i++){
             singularityList[i].classList.remove('singularity');
             singularityList[i].classList.remove('sub-singularity');
+            singularityList[i].classList.remove('singularity-nofade');
         }
     }
     function onLoadSort(){
@@ -168,15 +160,24 @@ var tyloren = function(object,initialize){
     }onLoadSort();
 
     function doSingularity(){
-        this.className += " singularity";
-        for(var i=0;i<singularityList.length;i++){
-            if(!((singularityList[i].className).match(/(?:^|\s)singularity(?!\S)/))){
-                singularityList[i].className += " sub-singularity";
+        var sconf = initialize.singularity_config;
+        console.log(typeof sconf === "undefined");
+
+        if(typeof sconf==="undefined" || (typeof sconf.fade_active!== "undefined" && sconf.fade_active===true) ){
+            this.className += " singularity";
+        }else{
+            this.className += " singularity-nofade";
+        }
+        if( typeof sconf==="undefined" ||(typeof sconf.fade_others !== "undefined" && sconf.fade_others ===true)){
+            for(var i=0;i<singularityList.length;i++){
+                if(!((singularityList[i].className).match(/(?:^|\s)singularity(?!\S)/) || (singularityList[i].className).match(/(?:^|\s)singularity-nofade(?!\S)/))){
+                    singularityList[i].className += " sub-singularity";
+                }
             }
         }
     }
     function initSingularity(){
-        if(singularity){
+        if(singularity!==false){
             for(var i=0;i<outer_list.length;i++){
                 outer_list[i].children[0].addEventListener('click',doSingularity,false);
                 singularityList.push(outer_list[i].children[0]);
@@ -184,9 +185,14 @@ var tyloren = function(object,initialize){
         }
     }initSingularity();
 
+    document.getElementById(toggle_small).addEventListener('click', function(){doIntervalChange(tpr_small)},false);
+    document.getElementById(toggle_medium).addEventListener('click', function(){doIntervalChange(tpr_med)},false);
+    document.getElementById(toggle_large).addEventListener('click', function(){doIntervalChange(tpr_lrg)},false);
+    document.getElementById(toggle_reset).addEventListener('click',resetTiles,false);
 };
 
 //tyloren(document.getElementById('photos_list'));
+
 tyloren(document.getElementById('photos_list'),{
     small:8,
     medium:4,
@@ -194,6 +200,10 @@ tyloren(document.getElementById('photos_list'),{
     speed:100,
     padding:10,
     singularity:true,
+    singularity_config:{
+        fade_others:true,
+        fade_active:false
+    },
     toggle_handlers:{
         small:'small_size',
         medium:'medium_size',

@@ -38,15 +38,6 @@ ul.photo-wrap {
     transition: all 200ms ease-out 500ms; }
     ul.photo-wrap li.photo-tile img.photo {
       width: 100%; }
-    ul.photo-wrap li.photo-tile.column-six {
-      width: 160px;
-      height: 120px; }
-    ul.photo-wrap li.photo-tile.column-four {
-      width: 250px;
-      height: 190px; }
-    ul.photo-wrap li.photo-tile.column-three {
-      width: 350px;
-      height: 260px; }
     ul.photo-wrap li.photo-tile:hover {
       transition: all 0.35s ease-out;
       cursor: pointer; }
@@ -111,7 +102,7 @@ div.side-bar {
     text-align: center; }
 
 .singularity {
-  z-index: 10;
+  z-index: 1;
   -webkit-animation: 1s linear singularity;
   -o-animation: 1s linear singularity;
   animation: 1s linear singularity;
@@ -122,6 +113,14 @@ div.side-bar {
   -o-transition: opacity 1s ease-out;
   transition: opacity 1s ease-out;
   opacity: 0; }
+
+.singularity-nofade {
+  z-index: 1;
+  -webkit-animation: 1s linear singularity-nofade;
+  -o-animation: 1s linear singularity-nofade;
+  animation: 1s linear singularity-nofade;
+  transform-style: preserve-3d;
+  opacity: 1; }
 
 .sub-singularity {
   z-index: 0;
@@ -149,7 +148,7 @@ div.side-bar {
     transform: scale(1);
     opacity: 1; }
   50% {
-    transform: scale(1.2);
+    transform: scale(1.1);
     opacity: 1; }
   70% {
     transform: scale(0.2);
@@ -157,6 +156,20 @@ div.side-bar {
   100% {
     transform: scale(0.1);
     opacity: 0; } }
+
+@keyframes singularity-nofade {
+  0% {
+    transform: scale(1);
+    opacity: 1; }
+  15% {
+    transform: scale(1.05);
+    opacity: 0.5; }
+  50% {
+    transform: scale(1);
+    opacity: 1; }
+  100% {
+    transform: scale(1);
+    opacity: 1; } }
 
 @keyframes sub-singularity {
   0% {

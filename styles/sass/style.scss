@@ -45,20 +45,6 @@ ul.photo-wrap {
       width: 100%;
     }
 
-    &.column-six {
-      width: 160px;
-      height: 120px;
-    }
-
-    &.column-four {
-      width: 250px;
-      height: 190px;
-    }
-    &.column-three {
-      width: 350px;
-      height: 260px;
-    }
-
     &:hover{
       transition: all 0.35s ease-out;
       //opacity: 0.75;
@@ -146,7 +132,7 @@ div.side-bar{
 //animation specific classes
 
 .singularity{
-  z-index: 10;
+  z-index: 1;
   -webkit-animation: 1s linear singularity ;
   -o-animation: 1s linear singularity ;
   animation: 1s linear singularity ;
@@ -157,6 +143,16 @@ div.side-bar{
   -o-transition: opacity 1s ease-out;
   transition: opacity 1s ease-out;
   opacity: 0;
+}
+
+.singularity-nofade{
+
+  z-index: 1;
+  -webkit-animation: 1s linear singularity-nofade ;
+  -o-animation: 1s linear singularity-nofade ;
+  animation: 1s linear singularity-nofade ;
+  transform-style: preserve-3d;
+  opacity: 1;
 }
 
 .sub-singularity{
@@ -191,7 +187,7 @@ div.side-bar{
     opacity: 1;
   }
   50%{
-    transform:scale(1.2);
+    transform:scale(1.1);
     opacity: 1;
   }
   70%{
@@ -204,6 +200,26 @@ div.side-bar{
   }
 }
 
+
+@keyframes singularity-nofade{
+  0%{
+    transform:scale(1);
+    opacity: 1;
+  }
+  15%{
+    transform:scale(1.05);
+    opacity: 0.5;
+  }
+  50%{
+    transform:scale(1);
+    opacity: 1;
+  }
+  100%{
+    transform:scale(1);
+    opacity: 1;
+  }
+}
+
 @keyframes sub-singularity{
 
   0%{
@@ -213,7 +229,6 @@ div.side-bar{
   50%{
     transform:scale(1);
     opacity: 1;
-
   }
   70%{
     transform:scale(0.5);
