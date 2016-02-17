@@ -36,13 +36,14 @@ ul.photo-wrap {
     list-style: none;
     position: absolute;
     padding: 0;
-    -webkit-transition: all 200ms ease-out 500ms;
-    -moz-transition: all 200ms ease-out 500ms;
-    -o-transition: all 200ms ease-out 500ms;
-    transition: all 200ms ease-out 500ms;
+    -webkit-transition: all 200ms ease-out 200ms;
+    -moz-transition: all 200ms ease-out 200ms;
+    -o-transition: all 200ms ease-out 200ms;
+    transition: all 200ms ease-out 200ms;
 
     img.photo {
       width: 100%;
+      transition: all 1s ease-out 200ms;
     }
 
     &:hover{
@@ -128,8 +129,31 @@ div.side-bar{
   }
 }
 
-
 //animation specific classes
+
+.xplode{
+  z-index: 1;
+  -webkit-animation: 0.5s linear xplode ;
+  -o-animation: 0.5s linear xplode ;
+  animation: 0.5s linear xplode ;
+  transform-style: preserve-3d;
+  opacity: 0;
+}
+
+.sub-xplosion{
+  z-index: 0;
+  -webkit-animation: 0.5s linear sub-singularity ;
+  -o-animation: 0.5s linear sub-singularity ;
+  animation: 0.5s linear sub-singularity ;
+  transform-style:  preserve-3d;
+  -webkit-transition: opacity 1.5s ease-out;
+  -moz-transition: opacity 1.5s ease-out;
+  -ms-transition: opacity 1.5s ease-out;
+  -o-transition: opacity 1.5s ease-out;
+  transition: opacity 1.5s ease-out;
+  opacity: 0;
+
+}
 
 .singularity{
   z-index: 1;
@@ -161,15 +185,30 @@ div.side-bar{
   -o-animation: 1s linear sub-singularity ;
   animation: 1s linear sub-singularity ;
   transform-style:  preserve-3d;
-  -webkit-transition: opacity 1s ease-out;
-  -moz-transition: opacity 1s ease-out;
-  -ms-transition: opacity 1s ease-out;
-  -o-transition: opacity 1s ease-out;
-  transition: opacity 1s ease-out;
+  -webkit-transition: opacity 1.5s ease-out;
+  -moz-transition: opacity 1.5s ease-out;
+  -ms-transition: opacity 1.5s ease-out;
+  -o-transition: opacity 1.5s ease-out;
+  transition: opacity 1.5s ease-out;
   opacity: 0;
 }
 
+@keyframes xplode{
+  
+  0%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.75;
+  }
+  100%{
+    opacity: 0;
+  }
+  
+}
+
 @keyframes bounce {
+
   0%{
     transform:scale(1);
   }
@@ -179,9 +218,11 @@ div.side-bar{
   100%{
     transform:scale(1);
   }
+
 }
 
 @keyframes singularity{
+
   0%{
     transform:scale(1);
     opacity: 1;
@@ -198,10 +239,11 @@ div.side-bar{
     transform:scale(0.1);
     opacity: 0;
   }
+
 }
 
-
 @keyframes singularity-nofade{
+
   0%{
     transform:scale(1);
     opacity: 1;
@@ -218,6 +260,7 @@ div.side-bar{
     transform:scale(1);
     opacity: 1;
   }
+
 }
 
 @keyframes sub-singularity{
@@ -238,4 +281,27 @@ div.side-bar{
     transform:scale(0.1);
     opacity: 0;
   }
+
+}
+
+
+@keyframes sub-xplosion{
+
+  0%{
+    transform:scale(1);
+    opacity: 1;
+  }
+  50%{
+    transform:scale(1);
+    opacity: 1;
+  }
+  70%{
+    transform:scale(0.5);
+    opacity: 0;
+  }
+  100%{
+    transform:scale(0.1);
+    opacity: 0;
+  }
+
 }

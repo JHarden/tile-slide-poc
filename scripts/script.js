@@ -6,11 +6,12 @@ var tyloren = function(object,initialize){
         tpr_lrg = 3,
         speed=100,
         singularity=true,
+        xplode=false,
         toggle_small='small_size',
         toggle_medium='medium_size',
         toggle_large='large_size',
         toggle_reset='reset',
-        singularityList = [],
+        animationList = [],
         outer_list = object.children,
         small_thumb_list,
         med_thumb_list,
@@ -22,6 +23,7 @@ var tyloren = function(object,initialize){
         speed = initialize.speed !== undefined ? initialize.speed : speed;
         padding = initialize.padding !== undefined ? initialize.padding : padding;
         singularity = (initialize.singularity !== undefined) ? initialize.singularity : singularity;
+        xplode = (initialize.xplode !== undefined) ? initialize.xplode : xplode;
         toggle_small = initialize.toggle_handlers.small != undefined ? initialize.toggle_handlers.small : toggle_small;
         toggle_medium = initialize.toggle_handlers.medium != undefined ? initialize.toggle_handlers.medium : toggle_medium;
         toggle_large = initialize.toggle_handlers.large != undefined ? initialize.toggle_handlers.large : toggle_large;
@@ -127,13 +129,16 @@ var tyloren = function(object,initialize){
             }
         }, speed);
     }
-
     function resetTiles(){
-        for(var i=0;i<singularityList.length;i++){
-            singularityList[i].classList.remove('singularity');
-            singularityList[i].classList.remove('sub-singularity');
-            singularityList[i].classList.remove('singularity-nofade');
+        for(var i=0;i<animationList.length;i++){
+            animationList[i].classList.remove('singularity');
+            animationList[i].classList.remove('sub-singularity');
+            animationList[i].classList.remove('sub-xplosion');
+            animationList[i].classList.remove('singularity-nofade');
+            animationList[i].classList.remove('xplode');
+            Object.assign(animationList[i].style,{transform:"translate3d(0,0,0)"});
         }
+        onLoadSort();
     }
     function onLoadSort(){
         for(var i = outer_list.length;i>0;i--) {
@@ -157,52 +162,117 @@ var tyloren = function(object,initialize){
                 }
             );
         }
-    }onLoadSort();
+    }
+
+    function recalculate(){
+        //TODO reinit coords on resize window
+    }
+
+    /*
+    * OPTIONAL ANIMATION FUNCTIONS
+     * 1. Singularity
+     * 2. Xplosion
+    */
+
+    function initAnimation(type){
+        for(var i=0;i<outer_list.length;i++){
+            outer_list[i].children[0].addEventListener('click',type,false);
+            outer_list[i].children[0].dataset.animate=i;
+            animationList.push(outer_list[i].children[0]);
+        }
+    }
 
     function doSingularity(){
-        var sconf = initialize.singularity_config;
-        console.log(typeof sconf === "undefined");
-
+        var sconf;
+        if(typeof initialize !=="undefined" && typeof initialize.singularity_config !== "undefined"){
+            sconf =    initialize.singularity_config;
+        }
         if(typeof sconf==="undefined" || (typeof sconf.fade_active!== "undefined" && sconf.fade_active===true) ){
             this.className += " singularity";
         }else{
             this.className += " singularity-nofade";
         }
         if( typeof sconf==="undefined" ||(typeof sconf.fade_others !== "undefined" && sconf.fade_others ===true)){
-            for(var i=0;i<singularityList.length;i++){
-                if(!((singularityList[i].className).match(/(?:^|\s)singularity(?!\S)/) || (singularityList[i].className).match(/(?:^|\s)singularity-nofade(?!\S)/))){
-                    singularityList[i].className += " sub-singularity";
+            for(var i=0;i<animationList.length;i++){
+                if(!((animationList[i].className).match(/(?:^|\s)singularity(?!\S)/) || (animationList[i].className).match(/(?:^|\s)singularity-nofade(?!\S)/))){
+                    animationList[i].className += " sub-singularity";
                 }
             }
         }
     }
-    function initSingularity(){
-        if(singularity!==false){
-            for(var i=0;i<outer_list.length;i++){
-                outer_list[i].children[0].addEventListener('click',doSingularity,false);
-                singularityList.push(outer_list[i].children[0]);
+
+    function doXplosion(){
+        this.className += " singularity-nofade",el = parseInt(this.dataset.animate),pr = parseInt(object.dataset.tiles),count = 0;
+        var n,s,e,w;
+
+        for(var i = 0; i<Math.ceil(animationList.length/pr);i++){
+            for(var j =0; j<pr;j++){
+                //get north and south
+                if(count === el){
+                    if(i>0 && j<pr-1){
+                        n = animationList[count-pr];
+                        n.className += " xplode";
+                    }
+                    if(((i+1)*pr)+j <outer_list.length ){
+                        s = animationList[((i+1)*pr)+j];
+                        s.className += " xplode";
+                    }
+                }
+                if(count === outer_list.length){
+                    break;
+                }else if(count === el-1 && (Math.floor(count/pr)===Math.floor(el/pr))){ //check if the west tile and current tile are on the same row
+                   w = animationList[el-1]; //set the west tile as the tile thats to the left of the selected one
+                    w.className += " xplode";
+                }else if(count === el+1 && (Math.floor(count/pr)===Math.floor(el/pr))){ //check if the east tile and current tile are on the same row
+                   e = animationList[el+1]; //set the east tile as the tile thats to the right of the selected one
+                    e.className += " xplode";
+                }
+                count++;
             }
         }
-    }initSingularity();
+        for(var i=0;i<animationList.length;i++){
+            if(!( (animationList[i].className).match(/(?:^|\s)xplode(?!\S)/) || (animationList[i].className).match(/(?:^|\s)singularity-nofade(?!\S)/))){
+                animationList[i].className += " sub-xplosion";
+            }
+        }
+        if(typeof initialize !=="undefined" && typeof initialize.xplode_config.split !=="undefined" && initialize.xplode_config.split===true){
+            if(typeof w !=="undefined")Object.assign(w.style,{transform:"translate3d(-" + (container_width/2) + "px,0,0)"});
+            if(typeof e !=="undefined")Object.assign(e.style,{transform:"translate3d(" + (container_width/2) + "px,0,0)"});
+            if(typeof n !=="undefined")Object.assign(n.style,{transform:"translate3d(0,-" + (window.innerHeight/2) + "px,0)"});
+            if(typeof s !=="undefined")Object.assign(s.style,{transform:"translate3d(0,+" + (window.innerHeight/2) + "px,0)"});
+        }
+    }
 
     document.getElementById(toggle_small).addEventListener('click', function(){doIntervalChange(tpr_small)},false);
     document.getElementById(toggle_medium).addEventListener('click', function(){doIntervalChange(tpr_med)},false);
     document.getElementById(toggle_large).addEventListener('click', function(){doIntervalChange(tpr_lrg)},false);
     document.getElementById(toggle_reset).addEventListener('click',resetTiles,false);
+
+    //onload
+    if(singularity){
+        initAnimation(doSingularity);
+    }else if(xplode){
+        initAnimation(doXplosion);
+    }
+    onLoadSort();
 };
 
 //tyloren(document.getElementById('photos_list'));
 
 tyloren(document.getElementById('photos_list'),{
     small:8,
-    medium:4,
-    large:3,
+    medium:5,
+    large:4,
     speed:100,
-    padding:10,
-    singularity:true,
+    padding:15,
+    singularity:false,
     singularity_config:{
-        fade_others:true,
+        fade_others:false,
         fade_active:false
+    },
+    xplode:true,
+    xplode_config:{
+        split:true
     },
     toggle_handlers:{
         small:'small_size',
