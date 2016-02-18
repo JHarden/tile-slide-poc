@@ -7,6 +7,7 @@ var tyloren = function(object,initialize){
         speed=100,
         singularity=true,
         xplode=false,
+        vacum=false,
         toggle_small='small_size',
         toggle_medium='medium_size',
         toggle_large='large_size',
@@ -24,6 +25,7 @@ var tyloren = function(object,initialize){
         padding = initialize.padding !== undefined ? initialize.padding : padding;
         singularity = (initialize.singularity !== undefined) ? initialize.singularity : singularity;
         xplode = (initialize.xplode !== undefined) ? initialize.xplode : xplode;
+        vacum = (initialize.vacum !== undefined) ? initialize.vacum : vacum;
         toggle_small = initialize.toggle_handlers.small != undefined ? initialize.toggle_handlers.small : toggle_small;
         toggle_medium = initialize.toggle_handlers.medium != undefined ? initialize.toggle_handlers.medium : toggle_medium;
         toggle_large = initialize.toggle_handlers.large != undefined ? initialize.toggle_handlers.large : toggle_large;
@@ -33,6 +35,8 @@ var tyloren = function(object,initialize){
         sw=[container_width/tpr_small,container_width/tpr_small],
         mw=[container_width/tpr_med,container_width/tpr_med],
         lw=[container_width/tpr_lrg,container_width/tpr_lrg];
+
+
 
     function init2dArray(countPerRow,xdim,ydim){
         //init the new array
@@ -109,6 +113,21 @@ var tyloren = function(object,initialize){
                 transform:"translate3d(" + (destination_coords.x) + "px," + (destination_coords.y) + "px,0)"
             }
         );
+    }
+
+    function getThumbListByLength(len,i,j){
+
+        switch(len){
+            case tpr_small:
+                return small_thumb_list[i][j];
+                break;
+            case tpr_med:
+                return med_thumb_list[i][j];
+                break;
+            case tpr_lrg:
+                return large_thumb_list[i][j];
+                break;
+        }
     }
 
     function doIntervalChange(row_num){
@@ -199,7 +218,7 @@ var tyloren = function(object,initialize){
                 }
             }
         }
-    }
+    }//.doSingularity
 
     function doXplosion(){
         this.className += " singularity-nofade",el = parseInt(this.dataset.animate),pr = parseInt(object.dataset.tiles),count = 0;
@@ -241,6 +260,51 @@ var tyloren = function(object,initialize){
             if(typeof n !=="undefined")Object.assign(n.style,{transform:"translate3d(0,-" + (window.innerHeight/2) + "px,0)"});
             if(typeof s !=="undefined")Object.assign(s.style,{transform:"translate3d(0,+" + (window.innerHeight/2) + "px,0)"});
         }
+    }//.doXplosion
+
+    function doVacum(){
+
+        this.className += " vacum";
+
+        //get list of photos
+        var cpr = parseInt(object.dataset.tiles), count = -1, len = animationList.length,coords = [],el = parseInt(this.dataset.animate);
+        var coords = [];
+        for(var i = 0; i<Math.ceil(len/cpr);i++){
+            for(var j =0; j<cpr;j++){
+                count++;
+                if(count === el){
+                    console.log("i: " + i);
+                    console.log("j: " + j);
+                    coords = getThumbListByLength(cpr,i,j);
+                    console.log(coords);
+                    break;
+                }
+            }
+        }
+
+        //need to calculate transform to this location
+        //coords = this location
+        //to get each elements transform needs to get from its location to current location
+
+
+
+        var stagger = 0;
+        var k = setInterval(function(){
+
+
+            console.log('stagger');
+            console.log(outer_list[stagger].style.transform);
+            //console.log(outer_list[stagger].getBoundingClientRect().left);
+
+
+            Object.assign(animationList[stagger].style,{transform:"translate3d(" + (coords.x) + "px,"+(coords.y)+"px,0)"});
+
+            stagger++;
+            if(stagger >= animationList.length) {
+                clearInterval(k);
+            }
+        }, 100);
+
     }
 
     document.getElementById(toggle_small).addEventListener('click', function(){doIntervalChange(tpr_small)},false);
@@ -253,6 +317,8 @@ var tyloren = function(object,initialize){
         initAnimation(doSingularity);
     }else if(xplode){
         initAnimation(doXplosion);
+    }else if(vacum){
+        initAnimation(doVacum);
     }
     onLoadSort();
 };
@@ -270,10 +336,11 @@ tyloren(document.getElementById('photos_list'),{
         fade_others:false,
         fade_active:false
     },
-    xplode:true,
+    xplode:false,
     xplode_config:{
         split:true
     },
+    vacum:true,
     toggle_handlers:{
         small:'small_size',
         medium:'medium_size',
