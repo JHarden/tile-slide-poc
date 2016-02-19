@@ -3,7 +3,8 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-contrib-watch');
-
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
@@ -14,7 +15,17 @@ module.exports = function (grunt) {
                 }
             }
         },
-
+        cssmin:{
+            options: {
+                shorthandCompacting: false,
+                roundingPrecision: -1
+            },
+            target: {
+                files: {
+                    'styles/css/style.min.css': ['styles/css/style.css']
+                }
+            }
+        },
         // Sass
         sass: {
             options: {
@@ -38,14 +49,13 @@ module.exports = function (grunt) {
         watch: {
             css: {
                 files: ['**/*.scss'],
-                tasks: ['sass'],
+                tasks: ['sass','cssmin'],
                 options: {
                     spawn: false
                 }
             }
         }
     });
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.registerTask('dev', ['sass', 'watch']);
-    grunt.registerTask('default', ['uglify']);
+    grunt.registerTask('dev', ['sass', 'watch','cssmin']);
+    grunt.registerTask('default', ['uglify','cssmin']);
 };

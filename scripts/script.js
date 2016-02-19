@@ -341,7 +341,7 @@ tyloren(document.getElementById('photos_list'),{
     },
     vacuum:true,
     vacuum_config:{
-      stagger:0,
+      stagger:25,
       fade:true
     },
     toggle_handlers:{
