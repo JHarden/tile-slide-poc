@@ -7,6 +7,14 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
+        uglify:{
+            dist:{
+                files:{
+                    'scripts/tyloren.min.js':['scripts/script.js']
+                }
+            }
+        },
+
         // Sass
         sass: {
             options: {
@@ -37,6 +45,7 @@ module.exports = function (grunt) {
             }
         }
     });
-
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.registerTask('dev', ['sass', 'watch']);
+    grunt.registerTask('default', ['uglify']);
 };
