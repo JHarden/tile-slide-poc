@@ -102,6 +102,15 @@ div.side-bar {
     line-height: 50px;
     text-align: center; }
 
+img.vortex {
+  transition: all 0.5s ease-out !important;
+  /*
+  -webkit-animation: 0.5s linear xplode ;
+  -o-animation: 0.5s linear xplode ;
+  animation: 0.5s linear xplode ;
+  */
+  opacity: 0; }
+
 .xplode {
   z-index: 1;
   -webkit-animation: 0.5s linear xplode;

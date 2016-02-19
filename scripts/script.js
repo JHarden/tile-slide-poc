@@ -7,7 +7,7 @@ var tyloren = function(object,initialize){
         speed=100,
         singularity=true,
         xplode=false,
-        vacum=false,
+        vacuum=false,
         toggle_small='small_size',
         toggle_medium='medium_size',
         toggle_large='large_size',
@@ -25,7 +25,7 @@ var tyloren = function(object,initialize){
         padding = initialize.padding !== undefined ? initialize.padding : padding;
         singularity = (initialize.singularity !== undefined) ? initialize.singularity : singularity;
         xplode = (initialize.xplode !== undefined) ? initialize.xplode : xplode;
-        vacum = (initialize.vacum !== undefined) ? initialize.vacum : vacum;
+        vacuum = (initialize.vacuum !== undefined) ? initialize.vacuum : vacuum;
         toggle_small = initialize.toggle_handlers.small != undefined ? initialize.toggle_handlers.small : toggle_small;
         toggle_medium = initialize.toggle_handlers.medium != undefined ? initialize.toggle_handlers.medium : toggle_medium;
         toggle_large = initialize.toggle_handlers.large != undefined ? initialize.toggle_handlers.large : toggle_large;
@@ -37,6 +37,16 @@ var tyloren = function(object,initialize){
         lw=[container_width/tpr_lrg,container_width/tpr_lrg];
 
 
+    function getTransform(el) {
+        var transform = window.getComputedStyle(el, null).getPropertyValue('-webkit-transform');
+        var results = transform.match(/matrix(?:(3d)\(-{0,1}\d+(?:, -{0,1}\d+)*(?:, (-{0,1}\d+))(?:, (-{0,1}\d+))(?:, (-{0,1}\d+)), -{0,1}\d+\)|\(-{0,1}\d+(?:, -{0,1}\d+)*(?:, (-{0,1}.+))(?:, (-{0,1}.+))\))/);
+
+        if(!results) return [0, 0, 0];
+        if(results[1] == '3d') return results.slice(2,5);
+
+        results.push(0);
+        return results.slice(5, 8); // returns the [X,Y,Z,1] values
+    }
 
     function init2dArray(countPerRow,xdim,ydim){
         //init the new array
@@ -61,8 +71,8 @@ var tyloren = function(object,initialize){
             myList[i] = new Array(countPerRow);
             for(var j =0; j<countPerRow;j++){
                 myList[i][j] = {
-                    x: (padding) + (xdim *(j)),
-                    y: (padding) + (ydim *(i))
+                    x: Math.round((padding) + (xdim *(j))),
+                    y: Math.round((padding) + (ydim *(i)))
                 };
                 count++;
                 if(count === arrayLength){
@@ -155,23 +165,26 @@ var tyloren = function(object,initialize){
             animationList[i].classList.remove('sub-xplosion');
             animationList[i].classList.remove('singularity-nofade');
             animationList[i].classList.remove('xplode');
+            animationList[i].classList.remove('vacuum');
+            animationList[i].classList.remove('vortex');
             Object.assign(animationList[i].style,{transform:"translate3d(0,0,0)"});
         }
         onLoadSort();
     }
     function onLoadSort(){
+        var counter,origin_xcoord,origin_ycoord,origin_coords;
         for(var i = outer_list.length;i>0;i--) {
 
-            var counter = i-1;
-            var origin_xcoord = (Math.ceil((counter + 1) / tpr_small)) - 1;
-            var origin_ycoord = 0;
+            counter = i-1;
+            origin_xcoord = (Math.ceil((counter + 1) / tpr_small)) - 1;
+            origin_ycoord = 0;
 
             if (((counter + 1) % tpr_small) === 0) {
                 origin_ycoord = tpr_small-1;
             } else {
                 origin_ycoord = ((counter + 1) % tpr_small) - 1;
             }
-            var origin_coords = small_thumb_list[origin_xcoord][origin_ycoord];
+            origin_coords = small_thumb_list[origin_xcoord][origin_ycoord];
             Object.assign(
                 outer_list[counter].style,
                 {
@@ -194,6 +207,8 @@ var tyloren = function(object,initialize){
     */
 
     function initAnimation(type){
+
+
         for(var i=0;i<outer_list.length;i++){
             outer_list[i].children[0].addEventListener('click',type,false);
             outer_list[i].children[0].dataset.animate=i;
@@ -262,10 +277,8 @@ var tyloren = function(object,initialize){
         }
     }//.doXplosion
 
-    function doVacum(){
-
-        this.className += " vacum";
-
+    function doVacuum(){
+        this.className += " vacuum";
         //get list of photos
         var cpr = parseInt(object.dataset.tiles), count = -1, len = animationList.length,coords = [],el = parseInt(this.dataset.animate);
         var coords = [];
@@ -273,38 +286,34 @@ var tyloren = function(object,initialize){
             for(var j =0; j<cpr;j++){
                 count++;
                 if(count === el){
-                    console.log("i: " + i);
-                    console.log("j: " + j);
                     coords = getThumbListByLength(cpr,i,j);
-                    console.log(coords);
                     break;
                 }
             }
         }
-
-        //need to calculate transform to this location
-        //coords = this location
-        //to get each elements transform needs to get from its location to current location
-
-
-
+        var interval = 50;
+        var isFade = true;
+        if(typeof initialize!=="undefined" && typeof initialize.vacuum_config !== "undefined"){
+            interval = initialize.vacuum_config.stagger;
+            isFade = initialize.vacuum_config.fade;
+        }
+        var xcoord = coords.x;
+        var ycoord = coords.y;
         var stagger = 0;
+
         var k = setInterval(function(){
-
-
-            console.log('stagger');
-            console.log(outer_list[stagger].style.transform);
-            //console.log(outer_list[stagger].getBoundingClientRect().left);
-
-
-            Object.assign(animationList[stagger].style,{transform:"translate3d(" + (coords.x) + "px,"+(coords.y)+"px,0)"});
-
+            var matrix = getTransform(outer_list[stagger]);
+            if(!animationList[stagger].classList.contains("vacuum")){
+                if(isFade){
+                    animationList[stagger].className+=" vortex";
+                }
+                Object.assign(animationList[stagger].style,{transform:"translate3d(" + ((parseInt(xcoord)) - parseInt(matrix[0])) + "px,"+(parseInt(ycoord - parseInt(matrix[1])))+"px,0)"});
+            }
             stagger++;
             if(stagger >= animationList.length) {
                 clearInterval(k);
             }
-        }, 100);
-
+        }, interval);
     }
 
     document.getElementById(toggle_small).addEventListener('click', function(){doIntervalChange(tpr_small)},false);
@@ -317,8 +326,8 @@ var tyloren = function(object,initialize){
         initAnimation(doSingularity);
     }else if(xplode){
         initAnimation(doXplosion);
-    }else if(vacum){
-        initAnimation(doVacum);
+    }else if(vacuum){
+        initAnimation(doVacuum);
     }
     onLoadSort();
 };
@@ -327,7 +336,7 @@ var tyloren = function(object,initialize){
 
 tyloren(document.getElementById('photos_list'),{
     small:8,
-    medium:5,
+    medium:6,
     large:4,
     speed:100,
     padding:15,
@@ -340,7 +349,11 @@ tyloren(document.getElementById('photos_list'),{
     xplode_config:{
         split:true
     },
-    vacum:true,
+    vacuum:true,
+    vacuum_config:{
+      stagger:25,
+      fade:true
+    },
     toggle_handlers:{
         small:'small_size',
         medium:'medium_size',
