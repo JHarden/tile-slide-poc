@@ -1,5 +1,7 @@
+'use strict';
 var tyloren = function(object,initialize){
 
+    (function(){
     var padding=15,
         tpr_small = 6,
         tpr_med = 4,
@@ -160,13 +162,7 @@ var tyloren = function(object,initialize){
     }
     function resetTiles(){
         for(var i=0;i<animationList.length;i++){
-            animationList[i].classList.remove('singularity');
-            animationList[i].classList.remove('sub-singularity');
-            animationList[i].classList.remove('sub-xplosion');
-            animationList[i].classList.remove('singularity-nofade');
-            animationList[i].classList.remove('xplode');
-            animationList[i].classList.remove('vacuum');
-            animationList[i].classList.remove('vortex');
+            animationList[i].classList.remove('singularity','sub-singularity','sub-xplosion','singularity-nofade','xplode','vacuum','vortex');
             Object.assign(animationList[i].style,{transform:"translate3d(0,0,0)"});
         }
         onLoadSort();
@@ -204,11 +200,10 @@ var tyloren = function(object,initialize){
     * OPTIONAL ANIMATION FUNCTIONS
      * 1. Singularity
      * 2. Xplosion
+     * 3. Vacuum
     */
 
     function initAnimation(type){
-
-
         for(var i=0;i<outer_list.length;i++){
             outer_list[i].children[0].addEventListener('click',type,false);
             outer_list[i].children[0].dataset.animate=i;
@@ -233,12 +228,11 @@ var tyloren = function(object,initialize){
                 }
             }
         }
-    }//.doSingularity
+    }
 
     function doXplosion(){
-        this.className += " singularity-nofade",el = parseInt(this.dataset.animate),pr = parseInt(object.dataset.tiles),count = 0;
-        var n,s,e,w;
-
+        this.className += " singularity-nofade";
+        var n,s,e,w,el = parseInt(this.dataset.animate),pr = parseInt(object.dataset.tiles),count = 0;
         for(var i = 0; i<Math.ceil(animationList.length/pr);i++){
             for(var j =0; j<pr;j++){
                 //get north and south
@@ -271,16 +265,16 @@ var tyloren = function(object,initialize){
         }
         if(typeof initialize !=="undefined" && typeof initialize.xplode_config.split !=="undefined" && initialize.xplode_config.split===true){
             if(typeof w !=="undefined")Object.assign(w.style,{transform:"translate3d(-" + (container_width/2) + "px,0,0)"});
-            if(typeof e !=="undefined")Object.assign(e.style,{transform:"translate3d(" + (container_width/2) + "px,0,0)"});
-            if(typeof n !=="undefined")Object.assign(n.style,{transform:"translate3d(0,-" + (window.innerHeight/2) + "px,0)"});
-            if(typeof s !=="undefined")Object.assign(s.style,{transform:"translate3d(0,+" + (window.innerHeight/2) + "px,0)"});
+                if(typeof e !=="undefined")Object.assign(e.style,{transform:"translate3d(" + (container_width/2) + "px,0,0)"});
+                    if(typeof n !=="undefined")Object.assign(n.style,{transform:"translate3d(0,-" + (window.innerHeight/2) + "px,0)"});
+                        if(typeof s !=="undefined")Object.assign(s.style,{transform:"translate3d(0,+" + (window.innerHeight/2) + "px,0)"});
         }
-    }//.doXplosion
+    }
 
     function doVacuum(){
+
         this.className += " vacuum";
-        //get list of photos
-        var cpr = parseInt(object.dataset.tiles), count = -1, len = animationList.length,coords = [],el = parseInt(this.dataset.animate);
+        var cpr = parseInt(object.dataset.tiles), count = -1, len = animationList.length,coords = [],el = parseInt(this.dataset.animate),interval = 50, isFade = true, stagger = 0;
         var coords = [];
         for(var i = 0; i<Math.ceil(len/cpr);i++){
             for(var j =0; j<cpr;j++){
@@ -291,15 +285,10 @@ var tyloren = function(object,initialize){
                 }
             }
         }
-        var interval = 50;
-        var isFade = true;
         if(typeof initialize!=="undefined" && typeof initialize.vacuum_config !== "undefined"){
             interval = initialize.vacuum_config.stagger;
             isFade = initialize.vacuum_config.fade;
         }
-        var xcoord = coords.x;
-        var ycoord = coords.y;
-        var stagger = 0;
 
         var k = setInterval(function(){
             var matrix = getTransform(outer_list[stagger]);
@@ -307,7 +296,7 @@ var tyloren = function(object,initialize){
                 if(isFade){
                     animationList[stagger].className+=" vortex";
                 }
-                Object.assign(animationList[stagger].style,{transform:"translate3d(" + ((parseInt(xcoord)) - parseInt(matrix[0])) + "px,"+(parseInt(ycoord - parseInt(matrix[1])))+"px,0)"});
+                Object.assign(animationList[stagger].style,{transform:"translate3d(" + ((parseInt(coords.x)) - parseInt(matrix[0])) + "px,"+(parseInt(coords.y - parseInt(matrix[1])))+"px,0)"});
             }
             stagger++;
             if(stagger >= animationList.length) {
@@ -330,10 +319,11 @@ var tyloren = function(object,initialize){
         initAnimation(doVacuum);
     }
     onLoadSort();
+
+    })();
 };
 
 //tyloren(document.getElementById('photos_list'));
-
 tyloren(document.getElementById('photos_list'),{
     small:8,
     medium:6,
@@ -351,7 +341,7 @@ tyloren(document.getElementById('photos_list'),{
     },
     vacuum:true,
     vacuum_config:{
-      stagger:25,
+      stagger:0,
       fade:true
     },
     toggle_handlers:{
