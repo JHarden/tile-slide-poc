@@ -53,7 +53,7 @@ module.exports = function (grunt) {
                 options: {
                     spawn: false
                 }
-            }
+            },
         }
     });
     grunt.registerTask('dev', ['sass', 'watch','cssmin']);

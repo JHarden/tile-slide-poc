@@ -3,13 +3,17 @@ var tyloren = function(object,initialize){
 
     (function(){
     var padding=15,
-        tpr_small = 6,
-        tpr_med = 4,
-        tpr_lrg = 3,
+        tpr_small = 10,
+        tpr_med = 7,
+        tpr_lrg = 5,
         speed=100,
+        responsive=true,
+        width_height_ratio=1,
         singularity=true,
         xplode=false,
         vacuum=false,
+        glados=false,
+        toggle_animations=false,
         toggle_small='small_size',
         toggle_medium='medium_size',
         toggle_large='large_size',
@@ -24,20 +28,32 @@ var tyloren = function(object,initialize){
         tpr_med = initialize.medium !== undefined ? initialize.medium : tpr_med;
         tpr_lrg = initialize.large !== undefined ? initialize.large : tpr_lrg;
         speed = initialize.speed !== undefined ? initialize.speed : speed;
+        width_height_ratio = initialize.width_height_ratio !== undefined ? initialize.width_height_ratio : width_height_ratio;
+        responsive = initialize.responsive !== undefined ? initialize.responsive : responsive;
         padding = initialize.padding !== undefined ? initialize.padding : padding;
         singularity = (initialize.singularity !== undefined) ? initialize.singularity : singularity;
         xplode = (initialize.xplode !== undefined) ? initialize.xplode : xplode;
         vacuum = (initialize.vacuum !== undefined) ? initialize.vacuum : vacuum;
+        glados = (initialize.glados !== undefined) ? initialize.glados : glados;
+        toggle_animations = (initialize.toggle_animations !== undefined) ? initialize.toggle_animations : toggle_animations;
+        if(initialize.toggle_handlers!==undefined){
         toggle_small = initialize.toggle_handlers.small != undefined ? initialize.toggle_handlers.small : toggle_small;
         toggle_medium = initialize.toggle_handlers.medium != undefined ? initialize.toggle_handlers.medium : toggle_medium;
         toggle_large = initialize.toggle_handlers.large != undefined ? initialize.toggle_handlers.large : toggle_large;
         toggle_reset = initialize.toggle_handlers.reset != undefined ? initialize.toggle_handlers.reset : toggle_reset;
+        }
     }
-    var container_width = object.getBoundingClientRect().width-padding,
+    var container_width = object.getBoundingClientRect().width-padding;
+    var sw,mw,lw;
+    if(width_height_ratio!=1){
+        sw=[container_width/tpr_small,(container_width/tpr_small)*width_height_ratio],
+        mw=[container_width/tpr_med,(container_width/tpr_med)*width_height_ratio],
+        lw=[container_width/tpr_lrg,(container_width/tpr_lrg)*width_height_ratio];
+    }else{
         sw=[container_width/tpr_small,container_width/tpr_small],
         mw=[container_width/tpr_med,container_width/tpr_med],
         lw=[container_width/tpr_lrg,container_width/tpr_lrg];
-
+    }
 
     function getTransform(el) {
         var transform = window.getComputedStyle(el, null).getPropertyValue('-webkit-transform');
@@ -48,6 +64,20 @@ var tyloren = function(object,initialize){
 
         results.push(0);
         return results.slice(5, 8); // returns the [X,Y,Z,1] values
+    }
+
+    function getClosest(array,num){
+        var i=0;
+        var minDiff=1000;
+        var ans;
+        for(i in array){
+            var m=Math.abs(num-array[i]);
+            if(m<minDiff &&(num<array[i])){ //number has to be closest but not over the resolution
+                minDiff=m;
+                ans=array[i];
+            }
+        }
+        return ans;
     }
 
     function init2dArray(countPerRow,xdim,ydim){
@@ -122,13 +152,13 @@ var tyloren = function(object,initialize){
             {
                 width:(Math.round(cw[0]-padding))+"px",
                 height:(Math.round(cw[1]-padding))+"px",
-                transform:"translate3d(" + (destination_coords.x) + "px," + (destination_coords.y) + "px,0)"
+                transform:"translate3d(" + (destination_coords.x) + "px," + (destination_coords.y) + "px,0)",
+                position:"absolute"
             }
         );
     }
 
     function getThumbListByLength(len,i,j){
-
         switch(len){
             case tpr_small:
                 return small_thumb_list[i][j];
@@ -160,58 +190,155 @@ var tyloren = function(object,initialize){
             }
         }, speed);
     }
-    function resetTiles(){
-        for(var i=0;i<animationList.length;i++){
-            animationList[i].classList.remove('singularity','sub-singularity','sub-xplosion','singularity-nofade','xplode','vacuum','vortex');
-            Object.assign(animationList[i].style,{transform:"translate3d(0,0,0)"});
-        }
-        onLoadSort();
-    }
-    function onLoadSort(){
+    function sort(){
         var counter,origin_xcoord,origin_ycoord,origin_coords;
+        var cpr = parseInt(object.dataset.tiles);
+        var list, cw;
+        switch(cpr){
+            case tpr_small:
+                list = small_thumb_list;
+                cw = sw;
+                break;
+            case tpr_med:
+                list = med_thumb_list;
+                cw = mw;
+                break;
+            case tpr_lrg:
+                list = large_thumb_list;
+                cw = lw;
+                break;
+            default :
+                break;
+        }
         for(var i = outer_list.length;i>0;i--) {
-
             counter = i-1;
-            origin_xcoord = (Math.ceil((counter + 1) / tpr_small)) - 1;
-            origin_ycoord = 0;
-
-            if (((counter + 1) % tpr_small) === 0) {
-                origin_ycoord = tpr_small-1;
-            } else {
-                origin_ycoord = ((counter + 1) % tpr_small) - 1;
+            if(typeof animationList != "undefined"){
+                animationList[counter].classList.remove('singularity','sub-singularity','sub-xplosion','singularity-nofade','xplode','vacuum','vortex','glados','chell');
+                animationList[counter].style.transform='';
             }
-            origin_coords = small_thumb_list[origin_xcoord][origin_ycoord];
+            origin_xcoord = (Math.ceil((counter + 1) / cpr)) - 1;
+            origin_ycoord = 0;
+            if (((counter + 1) % cpr) === 0) {
+                origin_ycoord = cpr-1;
+            } else {
+                origin_ycoord = ((counter + 1) % cpr) - 1;
+            }
+            origin_coords = list[origin_xcoord][origin_ycoord];
             Object.assign(
                 outer_list[counter].style,
                 {
-                    width:(Math.round(sw[0]-padding))+"px",
-                    height:(Math.round(sw[1]-padding))+"px",
-                    transform:"translate3d(" + (origin_coords.x) + "px," + (origin_coords.y) + "px,0)"
+                    width:(Math.round(cw[0]-padding))+"px",
+                    height:(Math.round(cw[1]-padding))+"px",
+                    transform:"translate3d(" + (origin_coords.x) + "px," + (origin_coords.y) + "px,0)",
+                    position:"absolute"
                 }
             );
+            //try removeing child classes aswell
+        }
+    }
+    function getMaxR(array){
+        return Math.max.apply(Math,array);
+    };
+
+    function doResponsiveTileVariations(){
+
+        var config = initialize.responsive_config;
+        var resolutions = Object.keys(config);
+        var closest = getClosest(resolutions,window.innerWidth);
+        /*var num_resolutions = resolutions.map(function(item){
+           return parseInt(item,10);
+        });
+        var max_resolution = Math.max.apply(Math,num_resolutions);
+        */
+        if(window.innerWidth <= closest){
+            for(var key in config[closest]){
+                switch(key){
+                    case "small":
+                        tpr_small = config[closest][key];
+                        if(width_height_ratio!=1) {
+                            sw = [container_width / tpr_small, (container_width / tpr_small) * width_height_ratio];
+                        }else{
+                            sw=[container_width/tpr_small,container_width/tpr_small];
+                        }
+                        small_thumb_list = init2dArray(tpr_small,sw[0],sw[1]);
+                        object.dataset.tiles=tpr_small;
+                        break;
+                    case "medium":
+                        tpr_med = config[closest][key];
+                        if(width_height_ratio!=1) {
+                            mw = [container_width / tpr_med, (container_width / tpr_med) * width_height_ratio];
+                        }else{
+                            mw=[container_width/tpr_med,container_width/tpr_med];
+                        }
+                        med_thumb_list = init2dArray(tpr_med,mw[0],mw[1]);
+                        break;
+                    case "large":
+                        tpr_lrg = config[closest][key];
+                        if(width_height_ratio!=1) {
+                            lw = [container_width / tpr_lrg, (container_width / tpr_lrg) * width_height_ratio];
+                        }else{
+                            lw=[container_width/tpr_lrg,container_width/tpr_lrg];
+                        }
+                        large_thumb_list = init2dArray(tpr_lrg,lw[0],lw[1]);
+                        break;
+                    case "padding":
+                        padding = config[closest][key];
+                    default :
+                        break;
+                }
+            }
         }
     }
 
-    function recalculate(){
-        //TODO reinit coords on resize window
+    function initResize(){
+            container_width = object.getBoundingClientRect().width-padding;
+        if(typeof initialize!=="undefined" && typeof initialize.responsive_config!=="undefined"){
+            doResponsiveTileVariations();
+        }
+        sort();
     }
 
+    if(responsive){
+        var id;
+        window.onresize = function(){
+            clearInterval(id);
+            id = window.setTimeout(initResize,200);
+        }
+    }
     /*
     * OPTIONAL ANIMATION FUNCTIONS
      * 1. Singularity
      * 2. Xplosion
      * 3. Vacuum
+     * 4. glados
     */
+    function demoAnimations(){
+        var el,elClone;
+        for(var i=0;i<outer_list.length;i++){
+            el = outer_list[i].children[0];
+            elClone = el.cloneNode(true);
+            el.parentNode.replaceChild(elClone, el);
+        }
+    }
 
     function initAnimation(type){
+        if(toggle_animations){
+            demoAnimations();
+        }
         for(var i=0;i<outer_list.length;i++){
             outer_list[i].children[0].addEventListener('click',type,false);
             outer_list[i].children[0].dataset.animate=i;
+            outer_list[i].children[0].style.transitionProperty="all";
+            outer_list[i].children[0].style.transitionDuration="1s";
+            outer_list[i].children[0].style.transitionTimingFunction="ease-out";
+            outer_list[i].children[0].style.transitionDelay="0.2s";
+            outer_list[i].children[0].style.width="100%";
             animationList.push(outer_list[i].children[0]);
         }
     }
 
     function doSingularity(){
+
         var sconf;
         if(typeof initialize !=="undefined" && typeof initialize.singularity_config !== "undefined"){
             sconf =    initialize.singularity_config;
@@ -231,6 +358,7 @@ var tyloren = function(object,initialize){
     }
 
     function doXplosion(){
+
         this.className += " singularity-nofade";
         var n,s,e,w,el = parseInt(this.dataset.animate),pr = parseInt(object.dataset.tiles),count = 0;
         for(var i = 0; i<Math.ceil(animationList.length/pr);i++){
@@ -263,7 +391,7 @@ var tyloren = function(object,initialize){
                 animationList[i].className += " sub-xplosion";
             }
         }
-        if(typeof initialize !=="undefined" && typeof initialize.xplode_config.split !=="undefined" && initialize.xplode_config.split===true){
+        if(typeof initialize !=="undefined" && typeof initialize.xplode_config!=="undefined" && typeof initialize.xplode_config.split !=="undefined" && initialize.xplode_config.split===true){
             if(typeof w !=="undefined")Object.assign(w.style,{transform:"translate3d(-" + (container_width/2) + "px,0,0)"});
                 if(typeof e !=="undefined")Object.assign(e.style,{transform:"translate3d(" + (container_width/2) + "px,0,0)"});
                     if(typeof n !=="undefined")Object.assign(n.style,{transform:"translate3d(0,-" + (window.innerHeight/2) + "px,0)"});
@@ -275,7 +403,6 @@ var tyloren = function(object,initialize){
 
         this.className += " vacuum";
         var cpr = parseInt(object.dataset.tiles), count = -1, len = animationList.length,coords = [],el = parseInt(this.dataset.animate),interval = 50, isFade = true, stagger = 0;
-        var coords = [];
         for(var i = 0; i<Math.ceil(len/cpr);i++){
             for(var j =0; j<cpr;j++){
                 count++;
@@ -305,10 +432,29 @@ var tyloren = function(object,initialize){
         }, interval);
     }
 
+    function doGlados(){
+        this.className += " glados";
+        var stagger  = 0;
+        var interval = 50;
+        if(typeof initialize !== "undefined" && typeof initialize.glados_config !== "undefined" && initialize.glados_config.stagger !== "undefined"){
+            interval = initialize.glados_config.stagger;
+        }
+
+        var l = setInterval(function(){
+            if(!animationList[stagger].classList.contains("glados")){
+                animationList[stagger].className += " chell";
+            }
+            stagger++;
+            if(stagger >= animationList.length) {
+                clearInterval(l);
+            }
+        }, interval);
+    }
+
     document.getElementById(toggle_small).addEventListener('click', function(){doIntervalChange(tpr_small)},false);
     document.getElementById(toggle_medium).addEventListener('click', function(){doIntervalChange(tpr_med)},false);
     document.getElementById(toggle_large).addEventListener('click', function(){doIntervalChange(tpr_lrg)},false);
-    document.getElementById(toggle_reset).addEventListener('click',resetTiles,false);
+    document.getElementById(toggle_reset).addEventListener('click',sort,false);
 
     //onload
     if(singularity){
@@ -317,37 +463,14 @@ var tyloren = function(object,initialize){
         initAnimation(doXplosion);
     }else if(vacuum){
         initAnimation(doVacuum);
+    }else if(glados){
+        initAnimation(doGlados);
     }
-    onLoadSort();
 
+    if(typeof initialize!=="undefined" && typeof initialize.responsive_config!=="undefined"){
+        doResponsiveTileVariations();
+    }
+    sort(); //kick off initial sort
     })();
 };
 
-//tyloren(document.getElementById('photos_list'));
-tyloren(document.getElementById('photos_list'),{
-    small:8,
-    medium:6,
-    large:4,
-    speed:100,
-    padding:15,
-    singularity:false,
-    singularity_config:{
-        fade_others:false,
-        fade_active:false
-    },
-    xplode:false,
-    xplode_config:{
-        split:true
-    },
-    vacuum:true,
-    vacuum_config:{
-      stagger:25,
-      fade:true
-    },
-    toggle_handlers:{
-        small:'small_size',
-        medium:'medium_size',
-        large:'large_size',
-        reset:'reset'
-    }
-});
