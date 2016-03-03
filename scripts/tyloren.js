@@ -1,15 +1,14 @@
 'use strict';
-var tyloren = function(object,initialize){
+var Tyloren = function(object,initialize){
 
-    (function(){
-    var padding=15,
-        tpr_small = 10,
-        tpr_med = 7,
-        tpr_lrg = 5,
+    var padding=10,
+        tpr_small = [10,10],
+        tpr_med = [7,15],
+        tpr_lrg = [5,10],
         speed=100,
         responsive=true,
         width_height_ratio=1,
-        singularity=true,
+        singularity=false,
         xplode=false,
         vacuum=false,
         glados=false,
@@ -46,13 +45,15 @@ var tyloren = function(object,initialize){
     var container_width = object.getBoundingClientRect().width-padding;
     var sw,mw,lw;
     if(width_height_ratio!=1){
-        sw=[container_width/tpr_small,(container_width/tpr_small)*width_height_ratio],
-        mw=[container_width/tpr_med,(container_width/tpr_med)*width_height_ratio],
-        lw=[container_width/tpr_lrg,(container_width/tpr_lrg)*width_height_ratio];
+        sw=[container_width/tpr_small[0],(container_width/tpr_small[0])*width_height_ratio],
+        mw=[container_width/tpr_med[0],(container_width/tpr_med[0])*width_height_ratio],
+        lw=[container_width/tpr_lrg[0],(container_width/tpr_lrg[0])*width_height_ratio];
+
     }else{
-        sw=[container_width/tpr_small,container_width/tpr_small],
-        mw=[container_width/tpr_med,container_width/tpr_med],
-        lw=[container_width/tpr_lrg,container_width/tpr_lrg];
+        sw=[container_width/tpr_small[0],container_width/tpr_small[0]],
+        mw=[container_width/tpr_med[0],container_width/tpr_med[0]],
+        lw=[container_width/tpr_lrg[0],container_width/tpr_lrg[0]];
+
     }
 
     function getTransform(el) {
@@ -85,22 +86,25 @@ var tyloren = function(object,initialize){
         var arrayLength = outer_list.length;
         var myList;
         switch (countPerRow){
-            case tpr_small:
+            case tpr_small[0]:
                 small_thumb_list = new Array(arrayLength);
                 myList = small_thumb_list;
+
                 break;
-            case tpr_med:
+            case tpr_med[0]:
                 med_thumb_list = new Array(arrayLength);
                 myList = med_thumb_list;
                 break;
-            case tpr_lrg:
+            case tpr_lrg[0]:
                 large_thumb_list = new Array(arrayLength);
                 myList = large_thumb_list;
                 break;
         }
         var count = 0;
+
         for(var i = 0; i<Math.ceil(arrayLength/countPerRow);i++){
             myList[i] = new Array(countPerRow);
+
             for(var j =0; j<countPerRow;j++){
                 myList[i][j] = {
                     x: Math.round((padding) + (xdim *(j))),
@@ -113,29 +117,31 @@ var tyloren = function(object,initialize){
             }
         }
         switch (countPerRow){
-            case tpr_small:
+            case tpr_small[0]:
                 return small_thumb_list;
-            case tpr_med:
+            case tpr_med[0]:
                 return  med_thumb_list;
-            case tpr_lrg:
+            case tpr_lrg[0]:
                 return large_thumb_list;
         }
     }
-    small_thumb_list = init2dArray(tpr_small,sw[0],sw[1]);
-    med_thumb_list = init2dArray(tpr_med,mw[0],mw[1]);
-    large_thumb_list = init2dArray(tpr_lrg,lw[0],lw[1]);
+    small_thumb_list = init2dArray(tpr_small[0],sw[0],sw[1]);
+    med_thumb_list = init2dArray(tpr_med[0],mw[0],mw[1]);
+    large_thumb_list = init2dArray(tpr_lrg[0],lw[0],lw[1]);
 
     function doTranslate(counter,array_length){
-
         var thumb_list, cw;
-        if(parseInt(array_length) === tpr_small){
+        if(parseInt(array_length) === tpr_small[0]){
             thumb_list = small_thumb_list;
+            padding = tpr_small[1] !== undefined ? tpr_small[1] : padding;
             cw = sw;
-        }else if(parseInt(array_length) === tpr_med){
+        }else if(parseInt(array_length) === tpr_med[0]){
             thumb_list = med_thumb_list;
+            padding = tpr_med[1] !== undefined ? tpr_med[1] : padding;
             cw = mw;
-        }else if(parseInt(array_length) === tpr_lrg){
+        }else if(parseInt(array_length) === tpr_lrg[0]){
             thumb_list = large_thumb_list;
+            padding = tpr_lrg[1] !== undefined ? tpr_lrg[1] : padding;
             cw = lw;
         }
         var dest_xcoord = (Math.ceil((counter+1)/parseInt(array_length)))-1;
@@ -160,29 +166,28 @@ var tyloren = function(object,initialize){
 
     function getThumbListByLength(len,i,j){
         switch(len){
-            case tpr_small:
+            case tpr_small[0]:
                 return small_thumb_list[i][j];
                 break;
-            case tpr_med:
+            case tpr_med[0]:
                 return med_thumb_list[i][j];
                 break;
-            case tpr_lrg:
+            case tpr_lrg[0]:
                 return large_thumb_list[i][j];
                 break;
         }
     }
 
     function doIntervalChange(row_num){
-
-        object.dataset.tiles = row_num;
+        object.dataset.tiles = row_num[0];
         var counter = outer_list.length-1;
         var i = setInterval(function(){
-            if(object.dataset.tiles==tpr_small){
-                doTranslate(counter,tpr_small);
-            }else if(object.dataset.tiles==tpr_med){
-                doTranslate(counter,tpr_med);
-            }else if(object.dataset.tiles==tpr_lrg){
-                doTranslate(counter,tpr_lrg);
+            if(object.dataset.tiles==tpr_small[0]){
+                doTranslate(counter,tpr_small[0]);
+            }else if(object.dataset.tiles==tpr_med[0]){
+                doTranslate(counter,tpr_med[0]);
+            }else if(object.dataset.tiles==tpr_lrg[0]){
+                doTranslate(counter,tpr_lrg[0]);
             }
             counter--;
             if(counter < 0) {
@@ -190,29 +195,35 @@ var tyloren = function(object,initialize){
             }
         }, speed);
     }
+
     function sort(){
         var counter,origin_xcoord,origin_ycoord,origin_coords;
         var cpr = parseInt(object.dataset.tiles);
+
         var list, cw;
         switch(cpr){
-            case tpr_small:
+            case tpr_small[0]:
                 list = small_thumb_list;
+                padding = tpr_small[1] !== undefined ? tpr_small[1] : padding;
                 cw = sw;
                 break;
-            case tpr_med:
+            case tpr_med[0]:
                 list = med_thumb_list;
+                padding = tpr_med[1] !== undefined ? tpr_med[1] : padding;
                 cw = mw;
                 break;
-            case tpr_lrg:
+            case tpr_lrg[0]:
                 list = large_thumb_list;
+                padding = tpr_lrg[1] !== undefined ? tpr_lrg[1] : padding;
                 cw = lw;
                 break;
             default :
                 break;
         }
+
         for(var i = outer_list.length;i>0;i--) {
             counter = i-1;
-            if(typeof animationList != "undefined"){
+            if(typeof animationList != "undefined" && animationList.length >0){
                 animationList[counter].classList.remove('singularity','sub-singularity','sub-xplosion','singularity-nofade','xplode','vacuum','vortex','glados','chell');
                 animationList[counter].style.transform='';
             }
@@ -223,6 +234,7 @@ var tyloren = function(object,initialize){
             } else {
                 origin_ycoord = ((counter + 1) % cpr) - 1;
             }
+
             origin_coords = list[origin_xcoord][origin_ycoord];
             Object.assign(
                 outer_list[counter].style,
@@ -233,9 +245,9 @@ var tyloren = function(object,initialize){
                     position:"absolute"
                 }
             );
-            //try removeing child classes aswell
         }
     }
+
     function getMaxR(array){
         return Math.max.apply(Math,array);
     };
@@ -245,44 +257,42 @@ var tyloren = function(object,initialize){
         var config = initialize.responsive_config;
         var resolutions = Object.keys(config);
         var closest = getClosest(resolutions,window.innerWidth);
-        /*var num_resolutions = resolutions.map(function(item){
-           return parseInt(item,10);
-        });
-        var max_resolution = Math.max.apply(Math,num_resolutions);
-        */
         if(window.innerWidth <= closest){
             for(var key in config[closest]){
                 switch(key){
                     case "small":
+
                         tpr_small = config[closest][key];
                         if(width_height_ratio!=1) {
-                            sw = [container_width / tpr_small, (container_width / tpr_small) * width_height_ratio];
+                            sw = [container_width / tpr_small[0], (container_width / tpr_small[0]) * width_height_ratio];
                         }else{
-                            sw=[container_width/tpr_small,container_width/tpr_small];
+                            sw=[container_width/tpr_small[0],container_width/tpr_small[0]];
                         }
-                        small_thumb_list = init2dArray(tpr_small,sw[0],sw[1]);
-                        object.dataset.tiles=tpr_small;
+                        padding =  tpr_small[1] !== "undefined" ? tpr_small[1] : padding;
+                        small_thumb_list = init2dArray(tpr_small[0],sw[0],sw[1]);
+                        object.dataset.tiles=tpr_small[0];
+
                         break;
                     case "medium":
                         tpr_med = config[closest][key];
                         if(width_height_ratio!=1) {
-                            mw = [container_width / tpr_med, (container_width / tpr_med) * width_height_ratio];
+                            mw = [container_width / tpr_med[0], (container_width / tpr_med[0]) * width_height_ratio];
                         }else{
-                            mw=[container_width/tpr_med,container_width/tpr_med];
+                            mw=[container_width/tpr_med[0],container_width/tpr_med[0]];
                         }
-                        med_thumb_list = init2dArray(tpr_med,mw[0],mw[1]);
+                        padding =  tpr_med[1] !== "undefined" ? tpr_med[1] : padding;
+                        med_thumb_list = init2dArray(tpr_med[0],mw[0],mw[1]);
                         break;
                     case "large":
                         tpr_lrg = config[closest][key];
                         if(width_height_ratio!=1) {
-                            lw = [container_width / tpr_lrg, (container_width / tpr_lrg) * width_height_ratio];
+                            lw = [container_width / tpr_lrg[0], (container_width / tpr_lrg[0]) * width_height_ratio];
                         }else{
-                            lw=[container_width/tpr_lrg,container_width/tpr_lrg];
+                            lw=[container_width/tpr_lrg[0],container_width/tpr_lrg[0]];
                         }
-                        large_thumb_list = init2dArray(tpr_lrg,lw[0],lw[1]);
+                        padding =  tpr_lrg[1] !== "undefined" ? tpr_lrg[1] : padding;
+                        large_thumb_list = init2dArray(tpr_lrg[0],lw[0],lw[1]);
                         break;
-                    case "padding":
-                        padding = config[closest][key];
                     default :
                         break;
                 }
@@ -326,7 +336,9 @@ var tyloren = function(object,initialize){
             demoAnimations();
         }
         for(var i=0;i<outer_list.length;i++){
-            outer_list[i].children[0].addEventListener('click',type,false);
+            if(type!==null){
+                outer_list[i].children[0].addEventListener('click',type,false);
+            }
             outer_list[i].children[0].dataset.animate=i;
             outer_list[i].children[0].style.transitionProperty="all";
             outer_list[i].children[0].style.transitionDuration="1s";
@@ -358,7 +370,6 @@ var tyloren = function(object,initialize){
     }
 
     function doXplosion(){
-
         this.className += " singularity-nofade";
         var n,s,e,w,el = parseInt(this.dataset.animate),pr = parseInt(object.dataset.tiles),count = 0;
         for(var i = 0; i<Math.ceil(animationList.length/pr);i++){
@@ -400,7 +411,6 @@ var tyloren = function(object,initialize){
     }
 
     function doVacuum(){
-
         this.className += " vacuum";
         var cpr = parseInt(object.dataset.tiles), count = -1, len = animationList.length,coords = [],el = parseInt(this.dataset.animate),interval = 50, isFade = true, stagger = 0;
         for(var i = 0; i<Math.ceil(len/cpr);i++){
@@ -439,7 +449,6 @@ var tyloren = function(object,initialize){
         if(typeof initialize !== "undefined" && typeof initialize.glados_config !== "undefined" && initialize.glados_config.stagger !== "undefined"){
             interval = initialize.glados_config.stagger;
         }
-
         var l = setInterval(function(){
             if(!animationList[stagger].classList.contains("glados")){
                 animationList[stagger].className += " chell";
@@ -465,12 +474,14 @@ var tyloren = function(object,initialize){
         initAnimation(doVacuum);
     }else if(glados){
         initAnimation(doGlados);
+    }else{
+        initAnimation(null);
     }
 
     if(typeof initialize!=="undefined" && typeof initialize.responsive_config!=="undefined"){
         doResponsiveTileVariations();
     }
-    sort(); //kick off initial sort
-    })();
+    sort();
+
 };
 

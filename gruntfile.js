@@ -11,7 +11,7 @@ module.exports = function (grunt) {
         uglify:{
             dist:{
                 files:{
-                    'scripts/tyloren.min.js':['scripts/script.js']
+                    'scripts/tyloren.min.js':['scripts/tyloren.js']
                 }
             }
         },
